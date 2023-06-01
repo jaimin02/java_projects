@@ -1,0 +1,35 @@
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script>
+var productServiceUrl = 'http://220.227.63.84/intasffrtest_ws/MobileFFR.asmx?op=CheckLoginAuthDtl2'; // Preferably write this out from server side
+beginSaveProduct("1","2","3");
+function beginSaveProduct(productID, productName, manufactureDate)
+{
+	var soapMessage ='<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><CheckLoginAuthDtl2 xmlns="http://tempuri.org/"><UserName_1>12345</UserName_1><Password_1>12345</Password_1><Type_1>XML</Type_1><Obj_Retu /><eStr_Retu>string</eStr_Retu></CheckLoginAuthDtl2></soap:Body></soap:Envelope>';
+ 
+	$.ajax({
+		url: productServiceUrl,
+		type: "POST",
+		dataType: "xml",
+		data: soapMessage,
+		success: processSuccess,
+        error: processError,
+		contentType: "text/xml; charset=\"utf-8\""
+	});
+	 
+	return false;
+}
+ 
+function processSuccess(data, status, req) {
+	alert("SUCCESS="+status);
+}
+function processError(data, status, req) {
+    alert("Status=" + status);
+} 
+</script>
+</head>
+<body>
+</body>
+</html>

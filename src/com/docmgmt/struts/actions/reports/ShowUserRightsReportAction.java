@@ -1,0 +1,77 @@
+package com.docmgmt.struts.actions.reports;
+
+import java.util.Vector;
+
+
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.docmgmt.dto.DTOWorkSpaceUserRightsMst;
+import com.docmgmt.server.db.DocMgmtImpl;
+
+public class ShowUserRightsReportAction extends ActionSupport{
+	
+	private static final long serialVersionUID = 1L;
+
+	private DocMgmtImpl docMgmtImpl=new DocMgmtImpl();
+	
+	
+
+	@Override
+	public String execute()
+	{
+	
+		DTOWorkSpaceUserRightsMst dto = new DTOWorkSpaceUserRightsMst();
+		dto.setNodeId(nodeId);
+		dto.setWorkSpaceId(workSpaceId);
+		dto.setUserCode(userId);
+		dto.setSortOn(sortOn);
+		dto.setSortBy(sortBy);
+		getUserRightsReportDtl=docMgmtImpl.getUserRightsReport(dto);
+		return SUCCESS;
+	}
+		
+	public String workSpaceId;
+	public int nodeId;
+	public int userId;
+	public String sortOn;
+	public String sortBy;
+	public Vector getUserRightsReportDtl;
+	
+	public String getWorkSpaceId() {
+		return workSpaceId;
+	}
+	public void setWorkSpaceId(String workSpaceId) {
+		this.workSpaceId = workSpaceId;
+	}
+	public int getNodeId() {
+		return nodeId;
+	}
+	public void setNodeId(int nodeId) {
+		this.nodeId = nodeId;
+	}
+	public int getUserId() {
+		return userId;
+	}
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+	public String getSortOn() {
+		return sortOn;
+	}
+	public void setSortOn(String sortOn) {
+		this.sortOn = sortOn;
+	}
+	public String getSortBy() {
+		return sortBy;
+	}
+	public void setSortBy(String sortBy) {
+		this.sortBy = sortBy;
+	}
+	public Vector getGetUserRightsReportDtl() {
+		return getUserRightsReportDtl;
+	}
+	public void setGetUserRightsReportDtl(Vector getUserRightsReportDtl) {
+		this.getUserRightsReportDtl = getUserRightsReportDtl;
+	}
+	
+}	

@@ -1,0 +1,30 @@
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+
+
+<field name="userName">
+	<field-validator type="requiredstring">
+        	<param name="trim">true</param>
+            <message>UserName is required</message>
+        </field-validator>
+</field>
+<field name="loginName">
+	<field-validator type="requiredstring">
+        	<param name="trim">true</param>
+            <message>Login name is required</message>
+        </field-validator>
+</field>
+<!-- <field name="userTypeCode">
+	<field-validator type="requiredstring">
+        	<param name="trim">true</param>
+            <message>UserType is required</message>
+        </field-validator>
+</field> -->
+
+<field name="usergrouplist">
+	<field-validator type="requiredstring">
+        	<param name="trim">true</param>
+            <message>GroupName is required</message>
+        </field-validator>
+</field>
+</validators>

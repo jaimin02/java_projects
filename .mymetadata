@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="KnowledgeNET_Test"
+  id="myeclipse.1240648423468"
+  context-root="/KnowledgeNET_Test"
+  j2ee-spec="5.0"
+  archive="KnowledgeNet_Test.war">
+  <attributes>
+    <attribute name="webrootdir" value="/WebRoot" />
+  </attributes>
+</project-module>
+

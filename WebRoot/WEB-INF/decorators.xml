@@ -1,0 +1,166 @@
+<decorators defaultdir="/decorators">
+	<excludes>
+		<pattern>/styles/*</pattern>
+		<pattern>/scripts/*</pattern>
+		<pattern>/images/*</pattern>
+		<pattern>/yui/*</pattern>
+		<pattern>/struts/* </pattern>
+		<pattern>/dojo/*</pattern>
+		<pattern>/scriptlib/*</pattern>
+		<pattern>/closePopUp*</pattern>
+		<pattern>/RefreshParent*</pattern>
+		<pattern>/openfile*</pattern>
+		<pattern>/CopyWorkspaceNodeAction*</pattern>
+		<pattern>/CopyStructureNodeAttrAction*</pattern>
+		<pattern>/CopyFile*</pattern>
+		<pattern>/WorkSpaceExistsForUpdate*</pattern>
+
+		<!-- IMPORTANT -->
+		<!--
+			All actions ending with '_ex.do' will not be decorated in any of the
+			decorators
+		-->
+		<pattern>/*_ex.do*</pattern>
+
+	</excludes>
+
+	<decorator name="main" page="main.jsp">
+		<pattern>/*</pattern>
+	</decorator>
+
+	<decorator name="blank" page="blank.jsp">
+
+		<pattern>/SaveAttributeMatrixValue.do</pattern>
+		<pattern>/ShowAllUserGroupByType.do</pattern>
+		<pattern>/EditUser.do</pattern>
+		<pattern>/EditClient*</pattern>
+		<pattern>/EditUserGroup*</pattern>
+		<pattern>/EditDept*</pattern>
+		<pattern>/EditLocation*</pattern>
+		<pattern>/EditProject*</pattern>
+		<pattern>/userDtlsforProject.do</pattern>
+		<pattern>/showGroupWiseUserDtl.do</pattern>
+		<pattern>/EditWorkspaceUser.do</pattern>
+		<pattern>/ShowWorkspaceSummay.do</pattern>
+		<pattern>/StructureOpenNodes.do</pattern>
+		<pattern>/WorkspaceEctdAttrNodes.do</pattern>
+		<pattern>/WorkspaceEctdSetAttribute.do</pattern>
+		<pattern>/ShowUserWorkspaceSummay.do</pattern>
+		<pattern>/WorkspaceOpenNodes.do</pattern>
+		<pattern>/workspaceNodeAttrAction.do</pattern>
+		<pattern>/workspaceNodeAttr.do</pattern>
+		<pattern>/SaveNodeAttrAction.do</pattern>
+		<pattern>/getRemarkUser.do</pattern>
+		<pattern>/SendRemarksToUser.do</pattern>
+		<pattern>/ShowAllComments.do</pattern>
+		<pattern>/AttributeNodes.do</pattern>
+
+		<!-- send by jwalin -->
+		<pattern>/EditWorkspace*</pattern>
+		<pattern>/ViewWorkspaceUserRights.do</pattern>
+		<pattern>/getWorkspaceDestTree.do</pattern>
+		<pattern>/getWorkspaceSourceTree.do</pattern>
+		<pattern>/ViewLabel.do</pattern>
+		<pattern>/CreateLabel.do</pattern>
+		<pattern>/WorkspaceAdminNodes.do</pattern>
+		<pattern>/WorkspaceNodeRights.do</pattern>
+		<pattern>/AttachSTF.do</pattern>
+		<pattern>/AddLeafNodes.do</pattern>
+		<pattern>/AddChildNodes.do</pattern>
+		<pattern>/AssignWorkspaceNodeRights.do</pattern>
+		<pattern>/docsummaryTree.do</pattern>
+		<pattern>/AddLeafNodesForStructure.do</pattern>
+		<pattern>/getTemplateSourceTree.do</pattern>
+		<pattern>/getTemplateDestinationTree.do</pattern>
+		<pattern>/StructureNodeAttrAction.do</pattern>
+		<pattern>/EditLeafNodesForStructure.do</pattern>
+		<pattern>/HighLeverSearchResult.do</pattern>
+		<pattern>/GetAttrValue.do</pattern>
+		<pattern>/ShowAttributeSearchResult.do</pattern>
+		<pattern>/WorkspaceNodeVersion.do</pattern>
+		<pattern>/ShowDocumentProperties.do</pattern>
+		<pattern>/GetNodeDtlForUserRights.do</pattern>
+		<pattern>/ShowUserRightsReport.do</pattern>
+		<pattern>/GenerateActivityVersionsReport.do</pattern>
+		<pattern>/ShowversionMaintenance.do</pattern>
+		<pattern>/GetActivityDetail.do</pattern>
+		<pattern>/GenerateActivityCommentReport.do</pattern>
+		<pattern>/ViewLabelNodeDetail.do</pattern>
+		<pattern>/ShowProjectDtl.do</pattern>
+		<pattern>/ShowUsersDetails.do</pattern>
+		<pattern>/templateTree.do</pattern>
+		<pattern>/templateNodeAttribute.do</pattern>
+
+		<!-- after 08-12-2008 -->
+		<pattern>/GetOperationByUserTypeID.do</pattern>
+		<pattern>/GetParentOperationDetail.do</pattern>
+		<pattern>/ReplicateWorkspaceNodeAttribute.do</pattern>
+		<pattern>/addMoreAttribute.do</pattern>
+		<pattern>/ShowAllAttrsOrGroup.do</pattern>
+
+		<pattern>/EditAttrGroup.do</pattern>
+		<pattern>/ViewAttrValues.do</pattern>
+		<pattern>/AddAttrToGroup.do</pattern>
+		<pattern>/ShowAttributes.do</pattern>
+		<pattern>/EditOperations.do</pattern>
+		<pattern>/SubmissionDetails.do</pattern>
+		<pattern>/ShowBulkTemplateAttrValue.do</pattern>
+		<pattern>/EditStage.do</pattern>
+		<pattern>/ShowUsersOnTemplate.do</pattern>
+		<pattern>/AssignTemplateRights.do</pattern>
+		<pattern>/EditTemplateUser.do</pattern>
+		<pattern>/ViewTemplateUserRights.do</pattern>
+		<pattern>/RepositoryGetWorkspaceSourceTree.do</pattern>
+		<pattern>/RepositoryGetWorkspaceDestTree.do</pattern>
+		<pattern>/RepositoryWorkspaceNodeAttribute.do</pattern>
+		<pattern>/ShowPendingWorks.do</pattern>
+		<pattern>/SaveLabel.do</pattern>
+
+
+		<!-- Added By : Ashmak Shah -->
+		<pattern>/ImportStructure.do</pattern>
+		<pattern>/CopyStructureFiles.do</pattern>
+
+		<pattern>/ListFiles.do</pattern>
+		<pattern>/ShowLinks.do</pattern>
+		<pattern>/SetLink.do</pattern>
+
+		<pattern>/ShowSTFCategoryValues.do</pattern>
+		<pattern>/AddCategory.do</pattern>
+		<pattern>/AttachSTFNode.do</pattern>
+		<pattern>/EditMultipleTypeSTFNode.do</pattern>
+
+		<pattern>/*SubmissionInfo.do</pattern>
+		<pattern>/*PublishAndSubmitForm.do</pattern>
+		<pattern>/*Submission.do</pattern>
+
+		<pattern>/*Section.do</pattern>
+
+		<pattern>/Show*SearchResult.do</pattern>
+		<pattern>/*CMS.do</pattern>
+
+		<pattern>/ViewNodeHistory.do</pattern>
+		<pattern>/ShowTreeForPublish.do</pattern>
+
+		<pattern>/*SrcDoc.do</pattern>
+		<pattern>/SaveManualProject.do</pattern>
+		<pattern>/extractSeq.do</pattern>
+
+		<pattern>/MergePDF*</pattern>
+		<pattern>/uploadFileName</pattern>
+
+		<pattern>/DisplayTreeAction.do</pattern>
+		<pattern>/CopyRoleOperationAction.do</pattern>
+		<pattern>/WorkSpaceExistsForUpdate.do</pattern>
+
+		<pattern>/Login*</pattern>
+		<!-- IMPORTANT -->
+		<!-- All actions ending with '_b.do' will be decorated in blank JSP-->
+		<pattern>/*_b.do</pattern>
+
+
+	</decorator>
+
+
+</decorators> 
+ 

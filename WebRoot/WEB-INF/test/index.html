@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Navigation Bar Demo</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet"
+	href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+<link rel="stylesheet" href="css/custom-navbar2.css" />
+<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+<script
+	src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+
+<script src="ttuter.js"></script>
+
+</head>
+
+<body>
+<div data-role="page" data-theme="a" id="homepage">
+<div data-role="header" data-theme="c" data-position="fixed">
+
+
+<div data-role="navbar" data-theme="a">
+<ul data-theme="d">
+	<li><a href="#" data-theme="a">
+	<div class="tab1"></div>
+	Tab-1</a></li>
+	<li><a href="#" data-theme="a">
+	<div class="tab2"></div>
+	Tab-2</a></li>
+	<li><a href="#" data-theme="a">
+	<div class="tab3"></div>
+	Tab-3</a></li>
+	<li><a href="#" data-theme="a">
+	<div class="tab4"></div>
+	Tab-4</a></li>
+	<li><a href="#" data-theme="a">
+	<div class="tab5"></div>
+	Tab-5</a></li>
+</ul>
+</ul>
+</div>
+</div>
+<div data-role="content">
+<center>
+
+<div data-role="controlgroup" data-type="horizontal" data-mini="false"
+	style="border: 1px solid; width: 50%; padding: 5px; background-color: #EBE4EA">
+<center><a href="index.html" data-role="button" class="btn1"
+	title="Home" style="margin: 10px">
+<div style="padding-top: 70px; color: black; text-shadow: none;">Home</div>
+</a> <a href="#funpage" data-role="button" data-rel="dialog"
+	data-transition="slideup" class="btn2" title="Fun"
+	style="margin: 10px; color: black; text-shadow: none;">
+<div style="padding-top: 70px">Fun</div>
+</a> </br>
+<a href="#bookpage" data-role="button" class="btn3" title="Book"
+	style="margin: 10px">
+<div style="padding-top: 70px; color: black; text-shadow: none;">My
+Book</div>
+</a> <a href="#writepage" data-role="button" class="btn4" title="Setting"
+	style="margin: 10px">
+<div style="padding-top: 70px; color: black; text-shadow: none;">Write</div>
+</a> </br>
+<a href="index.html" data-role="button" class="btn5" title="Book"
+	style="margin: 10px">
+<div style="padding-top: 70px; color: black; text-shadow: none;">Favorite</div>
+</a> <a href="index.html" data-role="button" class="btn6" title="Setting"
+	style="margin: 10px">
+<div style="padding-top: 70px; color: black; text-shadow: none;">Settings</div>
+</a> <br>
+</center>
+</div>
+<div class="contentWrapperDiv">
+<h1>MY DESK</h1>
+</div>
+</div>
+
+
+<div data-role="footer" data-theme="c" data-position="fixed">
+<div data-role="navbar" data-theme="a">
+<ul data-theme="d">
+	<li><a href="#" data-theme="a">
+	<div class="small-tab1"></div>
+	Tab-1</a></li>
+	<li><a href="#" data-theme="a">
+	<div class="small-tab2"></div>
+	Tab-2</a></li>
+	<li><a href="#" data-theme="a">
+	<div class="small-tab3"></div>
+	Tab-3</a></li>
+	<li><a href="#" data-theme="a">
+	<div class="small-tab4"></div>
+	Tab-4</a></li>
+	<li><a href="#" data-theme="a">
+	<div class="small-tab5"></div>
+	Tab-5</a></li>
+</ul>
+</div>
+</div>
+
+</div>
+
+
+<div data-role="page" id="funpage" data-theme="c">
+
+<div data-role="header" data-theme="b">
+<h1>Funny im..ag e</h1>
+</div>
+<!-- /header -->
+
+<div data-role="content" data-theme="d">
+<h2>Fun</h2>
+<center>
+<p class="fun"><a href="#popupPhoto1" data-rel="popup"
+	data-position-to="window" data-role="button" data-inline="true"
+	data-transition="flip"> <img src="images/fun/fun1.jpg" /> </a> <a
+	href="#popupPhoto2" data-rel="popup" data-position-to="window"
+	data-role="button" data-inline="true" data-transition="slideup"> <img
+	src="images/fun/fun2.jpg" /> </a> <a href="#popupPhoto3" data-rel="popup"
+	data-position-to="window" data-role="button" data-inline="true"
+	data-transition="slidedown"> <img src="images/fun/fun3.jpg" /> </a> <a
+	href="#popupPhoto4" data-rel="popup" data-position-to="window"
+	data-role="button" data-inline="true" data-transition="fade"> <img
+	src="images/fun/fun4.jpg" /> </a>
+
+<div data-role="popup" id="popupPhoto1" data-overlay-theme="a"
+	data-theme="d" data-corners="false"><a href="#" data-rel="back"
+	data-role="button" data-theme="a" data-icon="delete"
+	data-iconpos="notext" class="ui-btn-right">Close</a><img
+	class="popphoto" src="images/fun/fun1.jpg" alt="..."></div>
+<div data-role="popup" id="popupPhoto2" data-overlay-theme="a"
+	data-theme="d" data-corners="false"><a href="#" data-rel="back"
+	data-role="button" data-theme="a" data-icon="delete"
+	data-iconpos="notext" class="ui-btn-right">Close</a><img
+	class="popphoto" src="images/fun/fun2.jpg" alt="..."></div>
+<div data-role="popup" id="popupPhoto3" data-overlay-theme="a"
+	data-theme="d" data-corners="false"><a href="#" data-rel="back"
+	data-role="button" data-theme="a" data-icon="delete"
+	data-iconpos="notext" class="ui-btn-right">Close</a><img
+	class="popphoto" src="images/fun/fun3.jpg" alt="No Image"></div>
+<div data-role="popup" id="popupPhoto4" data-overlay-theme="a"
+	data-theme="d" data-corners="false"><a href="#" data-rel="back"
+	data-role="button" data-theme="a" data-icon="delete"
+	data-iconpos="notext" class="ui-btn-right">Close</a><img
+	class="popphoto" src="images/fun/fun4.jpg" alt="No Image"></div>
+
+</p>
+</center>
+<p><a href="#" data-rel="back" data-role="button" data-inline="true"
+	data-icon="back">Back to page "Home"</a></p>
+</div>
+<!-- /content -->
+
+<div data-role="footer">
+<h4>Page Footer</h4>
+</div>
+<!-- /footer --></div>
+<!-- /page popup -->
+
+<!-- book Page -->
+
+<div data-role="page" id="bookpage" data-theme="c">
+
+<div data-role="header" data-theme="b">
+<h1>Book im..ag e</h1>
+</div>
+<!-- /header -->
+
+<div data-role="content" data-theme="d">
+
+<center>
+<p class="fun"><a href="#popupPhoto1" data-rel="popup"
+	data-position-to="window" data-role="button" data-inline="true"
+	data-transition="flip"> <img src="images/book/book1.jpg" /> </a> <a
+	href="#popupPhoto3" data-rel="popup" data-position-to="window"
+	data-role="button" data-inline="true" data-transition="flip"> <img
+	src="images/book/book3.jpg" /> </a> <a href="#popupPhoto2"
+	data-rel="popup" data-position-to="window" data-role="button"
+	data-inline="true" data-transition="flip"> <img
+	src="images/book/book2.jpg" /> </a>
+
+<div data-role="popup" id="popupPhoto1" data-overlay-theme="a"
+	data-theme="d" data-corners="false"><a href="#" data-rel="back"
+	data-role="button" data-theme="a" data-icon="delete"
+	data-iconpos="notext" class="ui-btn-right">Close</a><img
+	class="popphoto" src="images/book/book1.jpg" alt="..."></div>
+<div data-role="popup" id="popupPhoto2" data-overlay-theme="a"
+	data-theme="d" data-corners="false"><a href="#" data-rel="back"
+	data-role="button" data-theme="a" data-icon="delete"
+	data-iconpos="notext" class="ui-btn-right">Close</a><img
+	class="popphoto" src="images/book/book2.jpg" alt="..."></div>
+<div data-role="popup" id="popupPhoto3" data-overlay-theme="a"
+	data-theme="d" data-corners="false"><a href="#" data-rel="back"
+	data-role="button" data-theme="a" data-icon="delete"
+	data-iconpos="notext" class="ui-btn-right">Close</a><img
+	class="popphoto" src="images/book/book3.jpg" alt="..."></div>
+
+</p>
+</center>
+<p><a href="#" data-rel="back" data-role="button" data-inline="true"
+	data-icon="back">Back to page "Home"</a></p>
+</div>
+<!-- /content -->
+
+<div data-role="footer">
+<h4>Page Footer</h4>
+</div>
+<!-- /footer --></div>
+<!-- /page book -->
+
+<!-- Page Write -->
+<div data-role="page" id="writepage" data-theme="c">
+
+<div data-role="header" data-theme="b">
+<h1>Write Something</h1>
+</div>
+<!-- /header -->
+
+<div data-role="content" data-theme="d">
+<p><textarea id="textToComplete"
+	style="height: 200px; font-size: 20px; border: 5px solid gray; color: #100068; text-shadow: none; box-shadow: inset 10px 10px 90px 1px brown;"
+	readonly>Hello</textarea> <textarea id="textWrited"
+	style="height: 200px; font-size: 20px; border: 5px solid gray; color: #100068; text-shadow: none; box-shadow: inset 10px 10px 90px 1px brown;"></textarea>
+<input type="button" value="check" onclick="check();" /></p>
+<div id="score">0</div>
+<div id="start">Start</div>
+<a href="#" data-rel="back" data-role="button" data-transition="flip">Submit
+and Back To Home</a>
+<center>
+</div>
+</div>
+
+
+</body>
+</html>

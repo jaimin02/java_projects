@@ -1,0 +1,599 @@
+<ajaxConfig>
+	<form ajaxRef="showUserGroupByType">
+		<!-- getTemplateDestinTree -->
+		<element ajaxRef="getUserGroupByType">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>ShowAllUserGroupByType.do</target>
+					<parameter>userTypeCode=userTypeCode</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>ShowAllUserGroupByType</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<!-- SOP Admin part -->
+	<form ajaxRef="addUsertoProject">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getUserDtl">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="get">
+					<target>showGroupWiseUserDtl.do</target>
+					<parameter>userGroupId=userWiseGroupCode</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showUserDtl</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+
+
+	<!-- ################# by jwalin ############# -->
+	<form ajaxRef="CopyPasteSourceWorkspace">
+		<!-- showTemplateSourceTree -->
+		<element ajaxRef="getWorkspaceSourceTree">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>getWorkspaceSourceTree.do</target>
+					<parameter>sorceWorkspaceId=sourceWorkspaceId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showSourceTreeDtl</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+
+	<form ajaxRef="CopyPasteDescWorkspace">
+		<!-- showTemplateSourceTree -->
+		<element ajaxRef="getWorkspaceDestinTree">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>getWorkspaceDestTree.do</target>
+					<parameter>destWorkspaceId=destWorkspaceId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showDestTreeDtl</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<form ajaxRef="Viewlabel">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getViewlabel">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>ViewLabel.do</target>
+					<parameter>workSpaceId=workSpaceId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>ViewLabelDiv</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+	<form ajaxRef="createDeleteSourceStructure">
+		<!-- showTemplateSourceTree -->
+		<element ajaxRef="getTemplateSourceTree">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>getTemplateSourceTree.do</target>
+					<parameter>sourceTemplateId=sorcTemplateId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showSourceTreeDtl</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+
+	<form ajaxRef="createDeleteDestStructure">
+		<!-- getTemplateDestinTree -->
+		<element ajaxRef="getTemplateDestinTree">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>getTemplateDestinationTree.do</target>
+					<parameter>destTemplateId=destTemplateId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showDestinationTreeDtl</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<form ajaxRef="showHighLevelResult">
+		<!-- getTemplateDestinTree -->
+		<element ajaxRef="getHighLevelResult">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onclick">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>HighLeverSearchResult.do</target>
+					<parameter>locationCode=locationCode,clientCode=clientCode,projectCode=projectCode,workSpaceId=workSpaceId,userCode=userCode</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>ShowHighLevelSearchResult</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+
+	<form ajaxRef="attributeValue">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getattrValue">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>GetAttrValue.do</target>
+					<parameter>attrId=attrId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>attrValue</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+
+
+	<form ajaxRef="setAttributeSearchResult">
+		<!-- getTemplateDestinTree -->
+		<element ajaxRef="getAttributeSearchResult">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onclick">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>ShowAttributeSearchResult.do</target>
+					<parameter>attrValue=attrVal,attrId=attrId</parameter>
+
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>ShowAttributeSearchResult</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+
+	<form ajaxRef="showNodeDtlForUserRights">
+		`		<!-- getTemplateDestinTree -->
+		<element ajaxRef="getNodeDtlForUserRights">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>GetNodeDtlForUserRights.do</target>
+					<parameter>workSpaceId=workSpaceId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showNodeAndUserDetail</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+
+	<form ajaxRef="showActivityNameDtl">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getActivityNameDtl">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="get">
+					<target>GenerateActivityVersionsReport.do</target>
+					<parameter>workSpaceId=workSpaceId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showActivityVersionReportDetail</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<form ajaxRef="showActivityDtl">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getActivityDtl">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="get">
+					<target>GetActivityDetail.do</target>
+					<parameter>workSpaceId=workSpaceId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showActivityDetail</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<form ajaxRef="showProjectDtl">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getProjectDtl">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="get">
+					<target>ShowProjectDtl.do</target>
+					<parameter>locationCode=locationCode,deptCode=deptCode</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showProjectDetail</parameter>
+				</responseHandler>
+			</event>
+		</element>
+		<element ajaxRef="getProjectDtl1">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="get">
+					<target>ShowProjectDtl.do</target>
+					<parameter>locationCode=locationCode,deptCode=deptCode</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showProjectDetail</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<form ajaxRef="showUserDtl">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getUserDtl">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="get">
+					<target>ShowUsersDetails.do</target>
+					<parameter>wsId=workSpaceId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>ShowUserDetail</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<form ajaxRef="setoperationbyusertypeid">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getoperationbyusertypeid">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="get">
+					<target>GetOperationByUserTypeID.do</target>
+					<parameter>userType=userType</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>getoperationbyusertypeid</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<form ajaxRef="setparentoperationdetail">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getparentoperationdetail">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>GetParentOperationDetail.do</target>
+					<parameter>operationCode=operationCode</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>getparentoperationdetail</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+
+	<form ajaxRef="showUserRightsReport">
+		<!-- getTemplateDestinTree -->
+		<element ajaxRef="getUserRightsReport">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onclick">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>ShowUserRightsReport.do</target>
+					<parameter>workSpaceId=workSpaceId,userId=userId,nodeId=nodeId,sortOn=sortOn,sortBy=sortBy</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showUserRightsReportDiv</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+
+	<form ajaxRef="showAttrsOrGroup">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getAttrsOrGroup">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="get">
+					<target>ShowAllAttrsOrGroup.do</target>
+					<parameter>attrOrAttrGroup=attrOrAttrGroup</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showattrorgroup</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+
+	<form ajaxRef="showAttributes">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getAttributes">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="get">
+					<target>ShowAttributes.do</target>
+					<parameter>attrForIndiId=attrForIndiId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showAttributes</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<form ajaxRef="bulkAttrValue">
+		<!-- getTemplateDestinTree -->
+		<element ajaxRef="templateAttrValue">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>ShowBulkTemplateAttrValue.do</target>
+					<parameter>templateId =templateId,attrId=attrId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>BulkTemplate</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<form ajaxRef="templateRightsDtl">
+		<!-- getTemplateDestinTree -->
+		<element ajaxRef="getTemplateRightsDtl">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>ShowUsersOnTemplate.do</target>
+					<parameter>templateId =templateId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>userForTemplateList</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+	<form ajaxRef="RepositoryCopyPasteSourceWorkspace">
+		<!-- showTemplateSourceTree -->
+		<element ajaxRef="RepositoryGetWorkspaceSourceTree">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>RepositoryGetWorkspaceSourceTree.do</target>
+					<parameter>sorceWorkspaceId=sourceWorkspaceId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showSourceTreeDtl</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<form ajaxRef="RepositoryCopyPasteDescWorkspace">
+		<!-- showTemplateSourceTree -->
+		<element ajaxRef="RepositoryGetWorkspaceDestinTree">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>RepositoryGetWorkspaceDestTree.do</target>
+					<parameter>destWorkspaceId=destWorkspaceId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>showDestTreeDtl</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<form ajaxRef="pendingWorks">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getPendingWorks">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>ShowPendingWorks.do</target>
+					<parameter>workSpaceId=workSpaceId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>ViewPendingWorks</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<form ajaxRef="STFCategory">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getSTFCategoryValues">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onchange">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>ShowSTFCategoryValues.do</target>
+					<parameter>categoryNameId=categoryNameId</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>STFCategoryValueDiv</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+	<form ajaxRef="STFMultipleSTFNode">
+		<!-- Only the first select will be Ajax-enabled. -->
+		<element ajaxRef="getMultipleSTFNode">
+			<!-- On change of the first select we need to submit the selection -->
+			<!-- to the servlet so we can get our list of characters back. -->
+			<event type="onclick">
+				<!-- Just going to submit a simple query string with a single -->
+				<requestHandler type="std:QueryString" method="post">
+					<target>MultipleSTFNode.do</target>
+					<parameter>nodeTitle=nodeTitle,propertyValue=propertyValue</parameter>
+				</requestHandler>
+				<!-- When we get back, just insert the returned results into the -->
+				<!-- div named characters on the page, which contains the second -->
+				<!-- select element. -->
+				<responseHandler type="std:InnerHTML">
+					<parameter>MultinodeDetailDiv</parameter>
+				</responseHandler>
+			</event>
+		</element>
+	</form>
+
+</ajaxConfig>

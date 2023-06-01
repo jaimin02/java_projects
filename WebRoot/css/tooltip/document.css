@@ -1,0 +1,21 @@
+/* Doc Styles */
+p,img {
+	margin: 0px;
+	padding: 0px;
+	width: auto;
+	height: auto;
+	font-family: 'Trebuchet MS', Arial;
+	font-size: 11px;
+	text-align: center;
+	vertical-align: middle;
+	color: #333333;
+}
+
+.button {
+	width: 200px;
+	height: 60px;
+	color: #FFFFFF;
+	background-color: #006699;
+	border: #003366 1px solid;
+	cursor: pointer;
+}

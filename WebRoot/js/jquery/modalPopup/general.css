@@ -1,0 +1,59 @@
+#backgroundPopup,#backgroundPopupQuery {
+	display: none;
+	position: fixed;
+	_position: absolute; /* hack for internet explorer 6*/
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	background: #000000;
+	border: 1px solid #cecece;
+	z-index: 99999;
+}
+
+#popupContact {
+	display: none;
+	position: fixed;
+	_position: absolute; /* hack for internet explorer 6*/
+	height: 270px;
+	width: 410px;
+	background: #FFFFFF;
+	border: 2px solid #cecece;
+	z-index: 999999;
+	padding: 12px;
+	font-size: 13px;
+}
+
+#popupContact h1,#popupContact h2,#popupContact h3,#popupContact h4,#popupContact h5,#popupContact h6,#popupContactQuery h1,#popupContactQuery h2,#popupContactQuery h3,#popupContactQuery h4,#popupContactQuery h5,#popupContactQuery h6
+	{
+	text-align: left;
+	color: #0C3F62;
+	font-family: Verdana;
+	FONT-SIZE: 10pt;
+	font-weight: bold;
+	border-bottom: 1px dotted #7d7d7d;
+	padding-bottom: 2px;
+	margin-bottom: 20px;
+}
+
+#popupContactClose,#popupContactCloseQuery {
+	font-size: 14px;
+	line-height: 14px;
+	right: 6px;
+	top: 4px;
+	position: absolute;
+	color: #0C3F62;
+	font-weight: 700;
+	display: block;
+}
+
+.popupCloseButton,.popupCloseButtonQuery {
+	font-size: 14px;
+	line-height: 14px;
+	right: 6px;
+	top: 4px;
+	position: absolute;
+	color: #0C3F62;
+	font-weight: 700;
+	display: block;
+}

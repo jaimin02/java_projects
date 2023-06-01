@@ -1,0 +1,2181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+	<!-- ##          configuration constants starts from here        ## -->
+
+    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+    <constant name="struts.action.extension" value="do" />
+    <constant name="struts.ui.theme" value="simple"/>
+	
+	
+	<!-- should be false in  production environment -->
+	<constant name="struts.devMode" value="false" />
+	
+	<!-- If false then the static content must be available at <context_path>/struts  -->
+	<constant name="struts.serve.static" value="true" />
+	
+	<!-- should be false in  production environment -->
+    <constant name="struts.serve.static.browserCache" value="false" />
+	<constant name="struts.i18n.reload" value="true" />
+	<constant name="struts.configuration.xml.reload" value="false" />
+	
+	<constant name="struts.freemarker.templatesCache" value="false" />
+	<constant name="struts.multipart.maxSize" value="1024000000" />
+	
+
+	
+	<!-- ##  global results and interceptors declaration starts from here ## -->
+	
+	 <package name="framework-default" namespace="/" extends="struts-default">
+		<result-types>
+			<result-type name="html" class="com.docmgmt.struts.ResultTypes.HtmlResult"></result-type>
+		</result-types>
+		
+        <interceptors>
+            <interceptor name="authentication"
+               class="com.docmgmt.struts.actions.authentic.AuthenticationInterceptor"/>
+
+            <interceptor-stack name="user" >
+                <interceptor-ref name="authentication" />
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+
+            <interceptor-stack name="user-submit" >
+                <interceptor-ref name="token-session" />
+                <interceptor-ref name="user"/>
+            </interceptor-stack>
+
+            <interceptor-stack name="guest" >
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+			
+			<interceptor-stack name="authenticationStack"> 
+				<interceptor-ref name="fileUpload">
+					<param name="maximumSize">
+						1024000000
+					</param>
+				</interceptor-ref>
+				<interceptor-ref name="defaultStack"/>
+			</interceptor-stack>
+            
+	    </interceptors>
+
+        <default-interceptor-ref name="user"/>
+
+		
+        <global-results>
+            <result name="error">/Error.jsp</result>
+            <result name="invalid.token">/Error.jsp</result>
+            <result name="login" type="chain">
+          		<param name="actionName">Login_input</param>
+          		<param name="postLoginURL">${postLoginURL}</param>
+        	</result> 
+        	<result name="sessionExpire">/Expire.jsp</result>
+        	<result name="html" type="html">
+				<param name="htmlContent">htmlContent</param>				
+			</result>
+        </global-results>
+
+        <global-exception-mappings>
+            <exception-mapping result="error" exception="java.lang.Throwable"/>
+        </global-exception-mappings>
+    
+
+    </package>
+
+	
+	<!-- ## common actions login,logout,welocme,date starts here ## -->
+	
+	 <package name="framework-support" namespace="/" extends="framework-default">
+	       
+	       	<action name="Welcome" class="com.docmgmt.struts.actions.authentic.Welcome">
+    		       
+            		   <result>/Welcome.jsp</result>
+	   		</action>
+               
+        	<action name="Logout" class="com.docmgmt.struts.actions.authentic.Logout">
+            		 <result type="redirect-action">Login_input</result>
+        	</action>
+
+        	<action name="Login_*"  method="{1}" class="com.docmgmt.struts.actions.authentic.Login">
+                	<result name="input">/Login.jsp</result>
+    	        	<result type="redirect-action">
+    	        		<param name="actionName">Welcome</param>
+    	        		<param name="showReminder">${showReminder}</param>
+    	        	</result>
+    	        	<result name = "pwdExpire" type="redirect-action">
+						<param name="actionName">ChangePassword</param> 
+						<param name="passExpired">${passExpired}</param>
+						<param name="showReminder">${showReminder}</param>
+			       	</result>
+    	        	
+            		<result name="redirect" type="redirect">${postLoginURL}</result> 
+            	<interceptor-ref name="guest"/>
+        	</action>
+		 
+	   		<action name="closePopUp">
+    		         <result>/closePopUp.jsp</result>
+	   		</action>
+	   		
+	   		<action name="ForwardToAdminHome">
+	   			<interceptor-ref name="user"></interceptor-ref>
+    		   <result type="redirect-action">Welcome</result>
+    		</action>
+			
+			<action name="ForwardToAdminLogout" class="com.docmgmt.struts.actions.authentic.ForwardToAdminLogoutAction" >
+    		        
+    		         <result>/LogOut.jsp</result>
+	   		</action>
+	   		
+	   		<action name="UnLockFileForLogout" class="com.docmgmt.struts.actions.authentic.UnlockFileForAdminAction" >
+	    		    <result type="redirect-action">ForwardToAdminLogout</result>
+			</action>
+		    
+		    <action name="openfile" class="com.docmgmt.struts.actions.util.openFileAction">
+	  			<interceptor-ref name="defaultStack"/>
+	  			<result type="stream">
+					<param name="contentType">${contentType}</param>
+					<param name="inputName">inputStream</param>	
+					<param name="contentDisposition">${contentDisposition}</param>								
+					<param name="bufferSize">1024</param>
+				</result>
+	  		</action>
+		    	
+    </package>
+	    
+	    
+	  <package name="wildcard" namespace="/" extends="framework-support">
+	        
+	         
+        	<action name="Error">
+    	        <result>/Error.jsp</result>
+        	</action>
+        	<action name="Expire">
+    	        <result>/Expire.jsp</result>
+        	</action>
+        	<action name="index">
+    	        <result>/index.jsp</result>
+        	</action>
+        	<action name="MainMenu">
+    	        <result>/MainMenu.jsp</result>
+        	</action>
+        	<action name="Message">
+    	        <result>/Message.jsp</result>
+        	</action>
+	  </package>
+	  
+	  
+	  
+	  
+	  <!-- ##        Add Attribute actions starts here      ## -->
+	  
+	  
+	  <package name="AddAttribute" extends="framework-default" namespace="/">
+	  		
+	  		<action name="AddAttribute" class="com.docmgmt.struts.actions.master.attribute.AttributeAction" method="getAddAttributeForm">
+				
+					<result name="input">/WEB-INF/master/Attribute/AddAttribute.jsp</result>	
+					<result >/WEB-INF/master/Attribute/AddAttribute.jsp</result>
+			 </action>
+
+			<action name="AddAttributeMatrixValue" class="com.docmgmt.struts.actions.master.attribute.AttributeMatrixValueAction">
+					<result>/WEB-INF/master/Attribute/AttributeMatrixValue.jsp</result>
+			</action>
+
+			<action name="SaveAttribute" class="com.docmgmt.struts.actions.master.attribute.SaveAttribute">
+		  			<result type="redirect-action">AddAttribute</result>
+					<result name="input" type="chain">AddAttribute</result>
+					<result name="ComboForm" type="redirect-action">
+							<param name="actionName">AddAttributeMatrixValue?iattrid=${iattrid}</param>
+      						<param name="namespace">/</param>
+					</result>
+			</action>
+	
+			<action name="SaveAttributeMatrixValue" class="com.docmgmt.struts.actions.master.attribute.SaveAttributeMatrixValue">
+		 			<result>/WEB-INF/master/Attribute/AttributeMatrixValueList.jsp</result>
+			</action>
+			
+			<action name="EditAttributeMatrixValue" class="com.docmgmt.struts.actions.master.attribute.EditAttributeMatrixValue">		 			
+		 			<result type="redirect-action">
+							<param name="actionName">AddAttributeMatrixValue?iattrid=${iattrid}</param>
+      						<param name="namespace">/</param>
+					</result>
+			</action>
+	  
+	  </package>
+
+		<!-- ##       ADD USER actions starts here      ## -->
+		
+	 <package name="AddUser" extends="framework-default" namespace="/">
+		 		
+	 		<action name="AddUser" class="com.docmgmt.struts.actions.master.user.AddUserAction">	 		  	
+	 			<result name="input">/WEB-INF/master/User/Adduser.jsp</result>
+	 			<result>/WEB-INF/master/User/Adduser.jsp</result>
+	 		</action>
+	 		
+	 		<action name="ShowAllUserGroupByType" class="com.docmgmt.struts.actions.master.user.UsrGrpListAction">
+	 			<result>/WEB-INF/master/User/grouplist.jsp</result>
+	 		</action>
+	 		
+	 		<action name="SaveUser" class="com.docmgmt.struts.actions.master.user.SaveUser">
+	 			<result type="redirect-action">AddUser</result>
+	 			<result name="input" type="chain">AddUser</result>		 		
+	 		</action>
+	 		
+	 		<action name="EditUser" class="com.docmgmt.struts.actions.master.user.EditUser">
+	 			<result>/WEB-INF/master/User/EditUser.jsp</result>
+	 		</action>
+	 		
+	 		<action name="UpdateUser_ex" class="com.docmgmt.struts.actions.master.user.SaveUser" method="UpdateUser">
+	 			<result type="html">
+					<param name="htmlContent">htmlContent</param>
+				</result>
+	 			<result name="input">closePopUp</result>	 		
+	 		</action>
+	 		
+    		<action name="ResetUserPassword" class="com.docmgmt.struts.actions.master.user.ResetUserPassword">
+	 			<result type="redirect-action">AddUser</result>
+	 		</action>
+	 		
+	 		<action name="DeleteUser" class="com.docmgmt.struts.actions.master.user.DeleteUser" >
+	 			<result type="redirect-action">
+	 				<param name="actionName">AddUser</param>
+	 				<param name="message">${message}</param>
+	 			</result>	 			
+			</action>
+			
+			<action name="ChangePassword" class="com.docmgmt.struts.actions.master.user.ChangePasswordAction">
+				
+		    	<result>/WEB-INF/master/User/ChangePassword.jsp</result>
+		    </action>
+		    
+		    <action name="UpdatePassword" class="com.docmgmt.struts.actions.master.user.ChangePasswordAction" method="updatePassword">
+		    	<result name="input">/WEB-INF/master/User/ChangePassword.jsp</result>
+		    		<result type="redirect-action">
+		    			<param name="actionName">Welcome</param>
+		    			<param name="showReminder">${showReminder}</param>
+		    		</result>
+		    </action>
+			
+			<action name="UnblockUser_ex" class="com.docmgmt.struts.actions.master.user.UnblockUserAction">
+				<result type="html">
+					<param name="htmlContent">htmlContent</param>
+				</result>
+			</action>
+			<action name="UserProfile" class="com.docmgmt.struts.actions.master.user.UserProfile.UserProfileAction">
+				<result>/WEB-INF/master/User/UserProfile/UserProfile.jsp</result>
+			</action>
+			<action name="SaveProfile_ex" class="com.docmgmt.struts.actions.master.user.UserProfile.UserProfileAction" method="saveUserProfile">
+				<result type="html">
+					<param name="htmlContent">htmlContent</param>
+				</result>
+			</action>
+	 </package>
+			
+			
+			<!-- ##       ADD USER Group actions starts here      ## -->
+	 <package name="AddUserGroup" extends="framework-default" namespace="/">
+				
+			<action name="AddUserGroup" class="com.docmgmt.struts.actions.master.usergroup.AddUserGroup">
+			  	
+				<result>/WEB-INF/master/UserGroup/AddUserGroup.jsp</result>
+			</action>
+				
+			<action name="SaveUserGroup" class="com.docmgmt.struts.actions.master.usergroup.SaveUserGroup">
+				<result type="redirect-action">
+		    			<param name="actionName">AddUserGroup</param>
+		    			<param name="errorMsg">${errorMsg}</param>
+		    		</result>
+			</action>
+			
+			<action name="EditUserGroup" class="com.docmgmt.struts.actions.master.usergroup.EditUserGroup">
+				<result>/WEB-INF/master/UserGroup/EditUserGroup.jsp</result>
+			</action>
+			
+			<action name="UpdateUserGroup_ex" class="com.docmgmt.struts.actions.master.usergroup.SaveUserGroup" method="UpdateUserGroup">
+				<result type="html">
+					<param name="htmlContent">htmlContent</param>
+				</result>
+		 		<result name="input">closePopUp</result>
+			</action>
+			
+			<action name="Encryption">
+		 			<result>/WEB-INF/master/User/PasswordEncryption.jsp</result>
+		 	</action>		
+		  	
+		  	<action name="EncryptDecrypt" class="com.docmgmt.struts.actions.master.user.PasswordEncryption">	
+		 		<result>/WEB-INF/master/User/PasswordEncryption.jsp</result>		 		
+		 	</action>
+			
+				
+			
+	 </package>
+			
+			  <!-- ##        Add client actions starts here      ## -->
+	
+	 <package name="Client" extends="framework-default" namespace="/">
+		
+ 		 <action name="AddClient" class="com.docmgmt.struts.actions.master.client.AddClientAction" >
+			
+			<result name="input">/WEB-INF/master/client/AddClient.jsp</result>	
+			<result>/WEB-INF/master/client/AddClient.jsp</result>
+		 </action>
+		 
+		<action name="SaveClient" class="com.docmgmt.struts.actions.master.client.SaveClientAction">
+   		     <result type="redirect-action">AddClient</result>
+   	   </action>
+  
+  		<action name="EditClient" class="com.docmgmt.struts.actions.master.client.EditClientAction">
+   			<result >/WEB-INF/master/client/EditClient.jsp</result>
+   		</action>
+  
+  		<action name="UpdateClient" class="com.docmgmt.struts.actions.master.client.SaveClientAction" method="UpdateClient">
+  		   <result type="redirect-action">closePopUp</result>
+  		</action>
+  		
+  		<action name="DeleteClient" class="com.docmgmt.struts.actions.master.client.DeleteClientAction">
+  		  <result type="redirect-action">AddClient</result>
+  		</action>
+
+  	</package>
+
+
+		  <!-- ##        Add DepartName actions starts here      ## -->
+	
+	 <package name="Department" extends="framework-default" namespace="/">
+		
+ 		 <action name="AddDepartment" class="com.docmgmt.struts.actions.master.department.AddDeptAction" >
+			
+				<result name="input">/WEB-INF/master/department/AddDept.jsp</result>
+				<result>/WEB-INF/master/department/AddDept.jsp</result>
+		 </action>
+		 
+		<action name="SaveDept" class="com.docmgmt.struts.actions.master.department.SaveDeptAction">
+   		 	  <result type="redirect-action">AddDepartment</result>
+   		</action>
+  
+		<action name="EditDept" class="com.docmgmt.struts.actions.master.department.EditDeptAction">
+   				<result>/WEB-INF/master/department/EditDept.jsp</result>
+   		</action>
+   		
+   		<action name="UpdateDept" class="com.docmgmt.struts.actions.master.department.SaveDeptAction" method="UpdateDept">
+  		   <result type="redirect-action">closePopUp</result>
+		</action>
+  		
+  		<action name="DeleteDept" class="com.docmgmt.struts.actions.master.department.DeleteDeptAction">
+  		   <result type="redirect-action">AddDepartment</result>
+  		</action>
+  
+	</package>
+	
+	
+	<!-- ##        Add Location actions starts here      ## -->
+	
+	 <package name="Location" extends="framework-default" namespace="/">
+		
+ 		 <action name="AddLocation" class="com.docmgmt.struts.actions.master.location.AddLocationAction" >
+			
+			<result name="input">/WEB-INF/master/location/AddLocation.jsp</result>
+				<result>/WEB-INF/master/location/AddLocation.jsp</result>
+		 </action>
+		 
+		 <action name="SaveLocation" class="com.docmgmt.struts.actions.master.location.SaveLocationAction">
+   		   <result type="redirect-action">AddLocation</result>
+   		</action>
+   		
+   		<action name="EditLocation" class="com.docmgmt.struts.actions.master.location.EditLocationAction">
+   			<result >/WEB-INF/master/location/EditLocation.jsp</result>
+   		</action>
+   		
+   		<action name="UpdateLocation" class="com.docmgmt.struts.actions.master.location.SaveLocationAction" method="UpdateLocation">
+  		   <result type="redirect-action">closePopUp</result>
+  		</action>
+  		
+  		<action name="DeleteLocation" class="com.docmgmt.struts.actions.master.location.DeleteLocationAction">
+  		   <result type="redirect-action">AddLocation</result>
+  		</action>
+  
+  	</package>
+  	
+  	
+  	<!-- ##        Add ProjectMst actions starts here      ## -->
+	
+	 <package name="Project" extends="framework-default" namespace="/">
+		
+ 		 <action name="AddProject" class="com.docmgmt.struts.actions.master.project.AddProjectAction" >
+			
+				<result>/WEB-INF/master/project/AddProject.jsp</result>
+				<result name="input">/WEB-INF/master/project/AddProject.jsp</result>
+		 </action>
+		  
+		<action name="SaveProjectType" class="com.docmgmt.struts.actions.master.project.SaveProjectAction">
+   		   <result type="redirect-action">AddProject</result>
+   		</action>
+   		
+   		<action name="EditProject" class="com.docmgmt.struts.actions.master.project.EditProjectAction">
+   			<result >/WEB-INF/master/project/EditProject.jsp</result>
+   		</action>
+   		
+   		<action name="UpdateProject" class="com.docmgmt.struts.actions.master.project.SaveProjectAction" method="UpdateProject">
+  		   <result type="redirect-action">closePopUp</result>
+  		</action>
+  		
+  		<action name="DeleteProject" class="com.docmgmt.struts.actions.master.project.DeleteProjectAction">
+  		   <result type="redirect-action">AddProject</result>
+  		</action>
+  		
+	
+	</package>
+	
+			
+    <!-- ##       ADD USER To PROJECT actions starts here      ## -->
+    
+    <package name="usertoproject" extends="framework-default" namespace="/">
+    	
+    	<action name="AddUsertoProjectSummary" class="com.docmgmt.struts.actions.master.user.AddUserToProject">
+    		<interceptor-ref name="user"></interceptor-ref>
+    		<result>/WEB-INF/master/User/AddUserToProject/AddUsertoProject.jsp</result>
+    	</action>
+    	
+    	<action name="userDtlsforProject" class="com.docmgmt.struts.actions.master.user.ShowUserOnProject">
+    		<result>/WEB-INF/master/User/AddUserToProject/UserOnProjectList.jsp</result>
+    	</action>
+    	
+    	<action name="AddUserToProjectForm" class="com.docmgmt.struts.actions.master.user.AddUserToProjectForm">
+    		<result>/WEB-INF/master/User/AddUserToProject/AddUserToProjectForm.jsp</result>
+    	</action>
+    	
+    	<action name="showGroupWiseUserDtl" class="com.docmgmt.struts.actions.master.user.ShowUserGroupAjaxAction">
+    		<result>/WEB-INF/master/User/AddUserToProject/ShowUserGroupWise.jsp</result>
+    	</action>
+   
+   		<action name="deleteWorkspaceUser" class="com.docmgmt.struts.actions.master.user.DeleteWorkspaceUser">
+			 <result type="chain">AddUserToProjectForm</result> 		
+   		</action>
+   		
+   		<action name="AddUserToProject" class="com.docmgmt.struts.actions.master.user.AddUserGroupToProject">
+   			<result type="redirect-action">
+				<param name="actionName">AddUserToProjectForm</param> 
+				<param name="workspaceid">${workspaceid}</param>
+			</result>
+   		</action>
+   
+   		<action name="EditWorkspaceUser" class="com.docmgmt.struts.actions.master.user.EditWorkspaceUser">
+   			<result>/WEB-INF/master/User/AddUserToProject/EditWorkspaceUser.jsp</result>
+   		</action>
+   		   		
+   		<action name="UpdateWorkspaceUser" class="com.docmgmt.struts.actions.master.user.UpdateWorkspaceUser">
+   			<result type="redirect-action">closePopUp</result>
+   		</action>
+   		
+   		<action name="ViewWorkspaceUserRights" class="com.docmgmt.struts.actions.master.user.ViewWorkspaceUserRightsAction">
+   			<result>/WEB-INF/master/User/AddUserToProject/ViewWorkspaceUserRights.jsp</result>
+   		</action>
+   		
+   		<action name="ViewTemplateUserRights" class="com.docmgmt.struts.actions.master.user.ViewTemplateUserRightsAction">
+   			<result>/WEB-INF/master/User/AddUserToTemplate/ViewTemplateUserRights.jsp</result>
+   		</action>
+   		
+   		<action name="deleteTemplateUser" class="com.docmgmt.struts.actions.master.user.DeleteTemplateUser">
+			 <result type="chain">AddUserToTemplateForm</result> 		
+   		</action>
+   		
+   		<action name="GetGroupUsersAction_ex" class="com.docmgmt.struts.actions.master.user.GetGroupUsersAction">
+   			<result>/WEB-INF/master/User/AddUserToProject/GetGroupUsersAction.jsp</result>
+   		</action>
+   		
+   		<action name="AttachMultipleUsers_b" class="com.docmgmt.struts.actions.master.user.AttachMultipleUsersAction">
+   			<result>/WEB-INF/master/User/AddUserToProject/AttachMultipleUsers.jsp</result>
+   		</action>
+    </package>
+    
+    
+   
+   <package name="template" extends="framework-default" namespace="/">
+		
+			 <!-- ##       ADD TEMPLATE,EDIT actions starts here      ## -->
+		
+ 		 <action name="CreateTemplate" class="com.docmgmt.struts.actions.template.CreateTemplateAction" >
+			
+			<result name="input">/WEB-INF/template/CreateTemplate.jsp</result>	
+			<result>/WEB-INF/template/CreateTemplate.jsp</result>
+		 </action>
+		 
+		 <action name="SaveTemplate" class="com.docmgmt.struts.actions.template.SaveTemplateAction">
+   		    <result name="input" type="chain">CreateTemplate</result>		 	
+   		    <result type="redirect-action">CreateTemplate</result>
+   	    </action>
+		 
+		 <action name="EditStructure" class="com.docmgmt.struts.actions.template.EditStructure">
+		 	
+		 	<result>/WEB-INF/template/EditStructure.jsp</result>
+		 </action>
+		 
+		  <action name="DeleteTemplate" class="com.docmgmt.struts.actions.template.DeleteTemplateAction">	 	
+   		    <result type="redirect-action">CreateTemplate</result>
+   	     </action>
+		 
+		 <action name="OpenStructure">
+		 	<result>/WEB-INF/template/openStructure.jsp</result>
+		 </action>
+		 
+		 <action name="StructureOpenNodes" class="com.docmgmt.struts.actions.template.StructureNodesAction">
+			<result>/WEB-INF/template/StructureNodes.jsp</result>
+		 </action>
+		 
+		 <action name="StructureNodeAttrAction" class="com.docmgmt.struts.actions.template.StructureNodeAttributeAction">
+			<result>/WEB-INF/template/StructureNodeAttribute.jsp</result>
+		 </action>
+		 
+		 
+		 <action name="EditLeafNodesForStructure" class="com.docmgmt.struts.actions.template.GetDetailForEditStructureAction">
+			<result>/WEB-INF/template/EditStructureNode.jsp</result>
+		 </action>
+		  
+		  <action name="SaveStructureNodes" class="com.docmgmt.struts.actions.template.EditStructureNodeAction">
+			<result type="redirect-action">closePopUp</result>
+		 </action>
+		 
+		  <action name="AddLeafNodesForStructure" class="com.docmgmt.struts.actions.template.AddLeafNodeForStructureAction">
+			<result>/WEB-INF/template/AddLeafNodeForStructure.jsp</result>
+		  </action>
+		  
+		  <action name="SaveLeafNodesStructure" class="com.docmgmt.struts.actions.template.SaveLeafNodeStructureAction">
+			<result type="redirect-action">closePopUp</result>
+		  </action>
+		  
+		  <action name="ShowStructure" class="com.docmgmt.struts.actions.template.ShowStructureAction">
+			
+			<result>/WEB-INF/template/ShowStructure.jsp</result>
+		  </action>
+		 
+		 <action name="templateOpen">
+				<result>/WEB-INF/template/StructureOpen.jsp</result>
+		  </action>			
+		 
+		 <action name="templateTree" class="com.docmgmt.struts.actions.template.StructureNodesForAttributeAction">
+			<result>/WEB-INF/template/StructureNodesForAttribute.jsp</result>
+		 </action>
+		 
+		 
+		 <action name="templateNodeAttribute" class="com.docmgmt.struts.actions.template.ShowNodeAttributeAction">
+			<result>/WEB-INF/template/StructureNodeAttr.jsp</result>
+		 </action>
+	
+		 <action name="saveTemplateNodeAttribute" class="com.docmgmt.struts.actions.template.SaveTemplateNodeAttrAction">
+			<result type="redirect-action">templateNodeAttribute</result>
+		 </action>
+		  
+		<action name="DeleteStructureNode" class="com.docmgmt.struts.actions.template.DeleteStructureNodeAction">
+			<result type="redirect-action">closePopUp</result>
+		 </action>
+		 
+	
+		  <!-- ##      Copy - Paste Structure starts here      ## -->
+		  
+		   
+		 <action name="CopyPasteStructure" class="com.docmgmt.struts.actions.template.CopyPasteTemplateAction">
+				<interceptor-ref name="user"></interceptor-ref>
+				<result>/WEB-INF/template/CopyPasteTemplate.jsp</result>
+		 </action>
+			
+		 <action name="getTemplateSourceTree" class="com.docmgmt.struts.actions.template.GetSourceTreeTemplateAction">
+				<result>/WEB-INF/template/ShowSourceTemplateTree.jsp</result>
+		 </action>
+	
+		 <action name="getTemplateDestinationTree" class="com.docmgmt.struts.actions.template.GetDestTreeTemplateAction">
+				<result>/WEB-INF/template/ShowDestTemplateTree.jsp</result>
+		 </action>
+		  
+		 <action name="CopyStructureNodeAttrAction" class="com.docmgmt.struts.actions.template.CopyStructureNodeAction">
+				<result>/WEB-INF/workspace/ShowCopyPasteDone.jsp</result>
+		 </action>
+	
+		 
+	</package>  	
+	
+	 <package name="workspace" extends="framework-default" namespace="/">
+		
+		<!-- ##       ADD workspace,EDIT workspace actions starts here      ## -->
+		
+ 		 <action name="CreateWorkspace" class="com.docmgmt.struts.actions.workspace.CreateWorkspaceAction" >
+			
+			<result>/WEB-INF/workspace/CreateWorkspace.jsp</result>
+			<result name="input">/WEB-INF/workspace/CreateWorkspace.jsp</result>
+		 </action>
+		 
+		 <action name="CreateSkeletonProject" class="com.docmgmt.struts.actions.workspace.CreateWorkspaceAction" >
+			<result>/WEB-INF/workspace/Skeleton/CreateSkeletonProject.jsp</result>
+			<result name="input">/WEB-INF/workspace/Skeleton/CreateSkeletonProject.jsp</result>
+		 </action>		 
+		 
+		  <action name="DeleteWorkspace_ex" class="com.docmgmt.struts.actions.workspace.DeleteWorkspaceAction" >
+			  	<result type="html">
+					<param name="htmlContent">htmlContent</param>
+				</result>
+		 </action>
+	
+		 <action name="SaveWorkspace" class="com.docmgmt.struts.actions.workspace.SaveWorkspace">
+   		    <result type="chain">CreateWorkspace</result>
+   		    <result type="chain" name="input">CreateWorkspace</result>
+   		    <result type="chain" name="SKELETON">CreateSkeletonProject</result>  
+   	    </action>
+   	    
+   	     <action name="EditWorkspace" class="com.docmgmt.struts.actions.workspace.EditWorkspaceAction" >
+			
+				<result>/WEB-INF/workspace/EditWorkspace.jsp</result>
+		 </action>
+		 
+		 <action name="UpdateWorkspace" class="com.docmgmt.struts.actions.workspace.UpdateWorkspaceAction">
+  		   <result name="input" type="redirect-action">EditWorkspace</result>
+  		   <result type="redirect-action">closePopUp</result>
+  		</action>
+  		<action name="WorkSpaceExistsForUpdate" class="com.docmgmt.struts.actions.workspace.UpdateWorkspaceAction" method="WorkSpaceExists">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+  		
+  		
+  		
+  		<action name="DeleteProjectNode" class="com.docmgmt.struts.actions.workspace.DeleteProjectNodeAction">
+			 <result type="redirect-action">closePopUp</result>
+		</action>
+  		
+  		
+
+		<!-- ##        Search Workspace  actions starts here      ## -->
+
+		<action name="WorkspaceSummay" class="com.docmgmt.struts.actions.workspace.WorkspaceSummarySearchPageForUserAction" >
+			
+				<result>/WEB-INF/workspace/WorkspaceSummarySearchPageForAdmin.jsp</result>
+		 </action>
+		 
+		 <action name="ShowWorkspaceSummay" class="com.docmgmt.struts.actions.workspace.LikewiseSearchAdminWorkspaceAction" >
+			<result>/WEB-INF/workspace/ShowWorkspaceSummary.jsp</result>
+		 </action>
+		
+		<!-- ##        Save Workspace Ectd Attribute value actions starts here      ## -->
+		
+		<action name="wsEctdAttr">
+			<result>/WEB-INF/workspace/WSEctdAttr.jsp</result>
+		</action>
+		
+		<action name="WorkspaceEctdAttrNodes" class="com.docmgmt.struts.actions.workspace.WorkspaceEctdAttrNodes">
+			<result>/WEB-INF/workspace/WorkspaceEctdAttrNodes.jsp</result>
+		</action>
+		
+		<action name="WorkspaceEctdSetAttribute" class="com.docmgmt.struts.actions.workspace.WorkspaceEctdSetAttribute">
+			<result>/WEB-INF/workspace/WorkspaceEctdSetAttribute.jsp</result>
+		</action>	
+		
+		<action name="saveWorkspaceEctdAttrValue" class="com.docmgmt.struts.actions.workspace.SaveWorkspaceEctdAttrValue">
+			  <result type="redirect-action">WorkspaceEctdSetAttribute?nodeId=${WsnodeId}</result>
+		</action>	
+		
+		
+		<!-- ##        Copy-Paste Workspace  actions starts here      ## -->
+  		
+  	 	<action name="CopyPasteWorkspace" class="com.docmgmt.struts.actions.workspace.CopyPasteWorkspace" >
+			
+			<result>/WEB-INF/workspace/CopyPasteWorkspace.jsp</result>
+		 </action>
+		 
+		<action name="getWorkspaceSourceTree" class="com.docmgmt.struts.actions.workspace.GetWorkspaceSourceTreeAction" >
+			<result>/WEB-INF/workspace/ShowSourceWorkspaceTree.jsp</result>
+		 </action>
+		 
+		 <action name="getWorkspaceDestTree" class="com.docmgmt.struts.actions.workspace.GetWorkspaceDestTreeAction" >
+			<result>/WEB-INF/workspace/ShowDestWorkspaceTree.jsp</result>
+		 </action>
+		 
+  		 <action name="CopyWorkspaceNodeAction" class="com.docmgmt.struts.actions.workspace.CopyWorkspaceNodeAction" >
+			<result>/WEB-INF/workspace/ShowCopyPasteDone.jsp</result>
+		 </action>
+		 
+		 
+		<!-- ###     Workspace summary for user rights actions     ####-->
+		
+		
+		<action name="WorkspaceSummayForUser" class="com.docmgmt.struts.actions.workspace.WorkspaceSummarySearchPageForUserAction">
+		 	<interceptor-ref name="user"></interceptor-ref>
+		 	<result>/WEB-INF/workspace/WorkspaceSummarySearchPageForUser.jsp</result>
+		 </action>		
+		
+		 <action name="ShowUserWorkspaceSummay" class="com.docmgmt.struts.actions.workspace.LikewiseSearchAdminWorkspaceAction">
+		 	<result>/WEB-INF/workspace/ShowUserWorkspaceSummary.jsp</result>
+		 </action>		
+		
+		<action name="WorkspaceOpen">
+			<result>/WEB-INF/workspace/WsOpen.jsp</result>
+		</action>		
+		
+		<action name="WorkspaceOpenNodes" class="com.docmgmt.struts.actions.workspace.WorkspaceNodes">
+			<result>/WEB-INF/workspace/WorkspaceNodes.jsp</result>
+			<result name="wsuser">/WEB-INF/workspace/WorkspaceNodesForUser.jsp</result>
+		</action>
+		
+		<action name="ProjDocStatus_ex" class="com.docmgmt.struts.actions.workspace.ProjectDocStatusAction">
+			<result name="projectStatusData" type="html">
+        		<param name="htmlContent">htmlContent</param>
+        	</result>
+        	<result>/WEB-INF/workspace/ProjectStatus.jsp</result>
+		</action>
+		
+		<action name="getWorkspaceDtl_ex" class="com.docmgmt.struts.actions.workspace.ProjectDocStatusAction" method="getWorkspaceDtl">
+			<result name="htmlContent" type="html">
+        		<param name="htmlContent">htmlContent</param>
+        	</result>
+		</action>
+		
+		<action name="workspaceNodeAttrAction" class="com.docmgmt.struts.actions.workspace.WorkSpaceNodeAttrAction">
+			<result>/WEB-INF/workspace/WorkSpaceNodeAttribute.jsp</result>
+		</action>	
+		
+		<action name="workspaceNodeAttr" class="com.docmgmt.struts.actions.workspace.WorkSpaceNodeAction">
+			
+			<result name="input" type="chain">/WEB-INF/workspace/EditNodeAttr.jsp</result>
+			<result name="EDITNODE">/WEB-INF/workspace/EditNodeAttr.jsp</result>
+			<result type="redirect-action">workspaceNodeAttrAction?nodeId=${nodeId}</result>
+			<result name="ViewHistory">/WEB-INF/workspace/FullNodeHistory/DisplayNodeHistory.jsp</result>
+		</action>	
+		
+		<action name="RevertBackNodeHistory" class="com.docmgmt.struts.actions.workspace.WorkSpaceNodeAction" method="revertBackNodeHistory">
+			<result type="redirect-action">workspaceNodeAttrAction?nodeId=${nodeId}</result>
+		</action>
+		
+		<action name="SaveNodeAttrAction" class="com.docmgmt.struts.actions.workspace.SaveNodeAttrAction">
+			<result type="redirect-action">workspaceNodeAttrAction?nodeId=${nodeId}</result>
+			<result type="chain" name="input">workspaceNodeAttrAction?nodeId=${nodeId}</result>
+		</action>
+		
+		
+		<action name="addMoreAttribute">
+			<result>/WEB-INF/workspace/AddMoreAttribute.jsp</result>
+		</action>	
+		
+		
+		<action name="WorkspaceAdminOpen">
+			<result>/WEB-INF/workspace/WsAdminOpen.jsp</result>
+		</action>	
+		
+		<action name="WorkspaceAdminNodes" class="com.docmgmt.struts.actions.workspace.WorkspaceAdminNodesAction">
+			<result>/WEB-INF/workspace/WorkspaceAdminNodes.jsp</result>
+		</action>
+		
+		<action name="WorkspaceNodeRights" class="com.docmgmt.struts.actions.workspace.WorkspaceNodeRightsAction">
+			<result>/WEB-INF/workspace/WorkspaceNodeRights.jsp</result>
+		</action>
+			
+		<action name="EditProjectLeafNodes" class="com.docmgmt.struts.actions.workspace.GetDetailForEditWSNodeAction">
+			<result>/WEB-INF/workspace/EditProjectNode.jsp</result>
+		</action>
+			
+		<action name="SaveProjectNodes" class="com.docmgmt.struts.actions.workspace.EditProjectNodeAction">
+			 <result type="redirect-action">closePopUp</result>
+		</action>
+		
+		<action name="AddLeafNodes" class="com.docmgmt.struts.actions.workspace.AddLeafNodeAction">
+			<result>/WEB-INF/workspace/AddLeafNode.jsp</result>
+		</action>
+		
+		<action name="SaveLeafNodes" class="com.docmgmt.struts.actions.workspace.SaveLeafNodeAction">
+			 <result type="redirect-action">closePopUp</result>
+		</action>
+		
+		<action name="EditProjectNodes" class="com.docmgmt.struts.actions.workspace.GetDetailForEditWSNodeAction">
+			<result>/WEB-INF/workspace/EditProjectNode.jsp</result>
+		</action>
+		
+		<action name="AddChildNodes" class="com.docmgmt.struts.actions.workspace.AddLeafNodeAction">
+			<result>/WEB-INF/workspace/AddLeafNode.jsp</result>
+		</action>
+		
+		
+		<action name="AssignWorkspaceNodeRights" class="com.docmgmt.struts.actions.workspace.WorkspaceAssignRightsAction">
+			<result>/WEB-INF/workspace/AssignWorkspaceRights.jsp</result>
+		</action>
+				
+		<action name="WorkspaceRights" class="com.docmgmt.struts.actions.workspace.SaveWorkspaceRightsAction">
+			 <result type="redirect-action">closePopUp</result>
+		</action>
+		
+		<action name="WorkspaceNodeVersion" class="com.docmgmt.struts.actions.workspace.WorkspaceNodeVersionAction">
+			 <result>/WEB-INF/workspace/ShowWorkspaceNodeVersion.jsp</result>
+		</action>
+		
+		<action name="SaveWorkspaceNodeVersion" class="com.docmgmt.struts.actions.workspace.SaveWorkspaceNodeVersionAction">
+			  <result type="redirect-action">WorkspaceNodeVersion?nodeId=${nodeId}</result>
+		</action>
+			
+		<!-- ##    Save and send comments ,show comments actions here  ## -->
+	
+		<action name="SendRemarksToUser" class="com.docmgmt.struts.actions.workspace.SendRemarksToUser">
+			<result >/WEB-INF/workspace/RemarkDtl.jsp</result>
+		</action>
+	
+		<action name="ShowAllComments" class="com.docmgmt.struts.actions.workspace.ShowAllComments">
+			<result>/WEB-INF/workspace/ShowAllComments.jsp</result>
+		</action>
+		
+		<action name="ShowSentComments_b" class="com.docmgmt.struts.actions.workspace.ShowAllComments" method="showSentComments">
+			<result>/WEB-INF/workspace/ShowSentComments.jsp</result>
+		</action>
+					
+		</package>
+		
+		<!-- ##      Create Label actions starts here      ## -->
+		  	
+		  	
+		 <package name="Label" extends="framework-default" namespace="/">
+		
+ 		 <action name="AddLabel" class="com.docmgmt.struts.actions.labelandpublish.AddLabelAction" >
+			
+			<result>/WEB-INF/labelandpublish/AddLabel.jsp</result>
+		 </action>
+		 
+		 
+		 <action name="ViewLabel" class="com.docmgmt.struts.actions.labelandpublish.ViewLabelAction" >
+			<result>/WEB-INF/labelandpublish/ViewLabel.jsp</result>
+		 </action>
+		 
+		
+		 <action name="CreateLabel" class="com.docmgmt.struts.actions.labelandpublish.CreateLabelAction" >
+			<result name="input">/WEB-INF/labelandpublish/CreateLabel.jsp</result>
+			<result>/WEB-INF/labelandpublish/CreateLabel.jsp</result>
+		 </action>
+		 
+		  <action name="SaveLabel" class="com.docmgmt.struts.actions.labelandpublish.SaveLabelAction">
+  		   <result name="exists" type="chain">CreateLabel</result>
+  		   <result type="redirect-action">closePopUp</result>
+  		</action>
+  		
+  		  <action name="WorkspaceSubmission" class="com.docmgmt.struts.actions.labelandpublish.WorkspaceSubmissionAction">
+  		   	<result>/WEB-INF/labelandpublish/WorkspaceSubmission.jsp</result>
+  		</action>
+  		
+  		<action name="WorkspacePublish" class="com.docmgmt.struts.actions.labelandpublish.PublishAction">
+  			<result type="redirect-action">SubmissionList?workSpaceId=${workSpaceId}</result>
+  		</action>
+  		
+  		<action name="SelectSubmit" class="com.docmgmt.struts.actions.labelandpublish.SelectSubmitAction">
+  			<interceptor-ref name="user"></interceptor-ref>
+  			<result>/WEB-INF/labelandpublish/SelectSubmit.jsp</result>
+  		</action>
+  		
+  		<action name="SubmissionList" class="com.docmgmt.struts.actions.labelandpublish.SubmissionList">
+  			<result>/WEB-INF/labelandpublish/SubmissionList.jsp</result>
+  		</action>
+  		
+ 		<action name="UpdateSubmission" class="com.docmgmt.struts.actions.labelandpublish.UpdateWorkspaceSubmission">
+  			<result>/WEB-INF/labelandpublish/SubmissionComplete.jsp</result>
+  		</action>
+ 		
+ 		<action name="SubmissionDetails" class="com.docmgmt.struts.actions.labelandpublish.SubmissionDetailsAction">
+  			<result>/WEB-INF/labelandpublish/SubmissionDetails.jsp</result>
+  		</action>
+  		
+  		<action name="docsummaryTree">
+			<result>/WEB-INF/labelandpublish/DocSummaryTree.jsp</result>
+		 </action>
+		 
+		 <action name="ViewLabelNodeDetail" class="com.docmgmt.struts.actions.labelandpublish.ViewNodeDetailAction">
+  			<result>/WEB-INF/labelandpublish/ViewLabelNodeDetail.jsp</result>
+  		</action>
+  		
+  		 <action name="UpdateSubmissionComplete" class="com.docmgmt.struts.actions.labelandpublish.UpdateCompleteSubmssion">
+  			<result type="redirect-action">SubmissionList?workSpaceId=${workspaceId}</result>
+  		</action>
+  		
+	 </package>	
+	
+	<!-- ##      Attach STF actions starts here      ## -->
+		
+	<package name="STF" extends="framework-default" namespace="/">
+		
+		<action name="AttachSTF" class="com.docmgmt.struts.actions.stf.AttachSTFAction">
+			<result>/WEB-INF/stf/AttachSTF.jsp</result>
+		</action>
+			
+		<action name="AttachSTFNode" class="com.docmgmt.struts.actions.stf.AttachSTFNodeAction">
+			<result name="show" type="redirect-action">AttachSTF?nodeId=${nodeId}</result>
+			<result type="redirect-action">closePopUp</result>
+		</action>
+		
+		<action name="AddSTFNodes" class="com.docmgmt.struts.actions.stf.AddSTFNodeAction">
+			  <interceptor-ref name="user"></interceptor-ref>
+			  <result>/WEB-INF/stf/AddSTFNodes.jsp</result>
+		</action>
+		
+		<action name="SaveSTFNodes" class="com.docmgmt.struts.actions.stf.SaveSTFNodesAction">
+			   <result type="redirect-action">AddSTFNodes</result>
+		</action>
+		
+		<!-- Added By : Ashmak Shah-->
+		<action name="ShowSTFCategoryValues" class="com.docmgmt.struts.actions.stf.AttachSTFAction" method="getCategoryValues">
+			<result>/WEB-INF/stf/ShowSTFCategoryValues.jsp</result>
+		</action>
+		<action name="EditMultipleTypeSTFNode" class="com.docmgmt.struts.actions.stf.EditMultipleTypeSTFNodeAction">
+			<result>/WEB-INF/stf/EditMultipleTypeSTFNode.jsp</result>
+		</action>
+		<action name="UpdateMultipleTypeSTFNode" class="com.docmgmt.struts.actions.stf.EditMultipleTypeSTFNodeAction" method="updateSTFNode">
+			<result type="redirect-action">closePopUp</result>
+		</action>
+	</package>
+	
+	<package name="search" extends="framework-default" namespace="/">
+		
+ 		 <action name="HighLevelSearch" class="com.docmgmt.struts.actions.search.HighLevelSearchAction" >
+			
+			<result name="input">/WEB-INF/search/HighLevelSearch.jsp</result>	
+			<result>/WEB-INF/search/HighLevelSearch.jsp</result>
+		 </action>
+		 
+		 <action name="HighLeverSearchResult" class="com.docmgmt.struts.actions.search.HighLevelSearchResultAction" >
+			<result>/WEB-INF/search/HighLevelSearchResult.jsp</result>
+		 </action>
+		
+		 <action name="ShowSavedSearch" class="com.docmgmt.struts.actions.search.ShowSavedSearchAction" >
+			<interceptor-ref name="user"></interceptor-ref>
+			<result>/WEB-INF/search/ShowSavedSearch.jsp</result>
+		 </action>
+		  
+		 <action name="DeleteHotSearch" class="com.docmgmt.struts.actions.search.DeleteHotSearchAction" >
+			 <result type="redirect-action">HighLevelSearch</result>
+		 </action>
+		 
+		 <action name="SaveHighLevelSearch" class="com.docmgmt.struts.actions.search.SaveHighLevelSearchAction" >
+			 <result type="redirect-action">HighLevelSearch</result>
+		 </action>
+		 
+		 <action name="AttributeSearch" class="com.docmgmt.struts.actions.search.AttributeSearchAction" >
+			 
+			 <result>/WEB-INF/search/AttributeSearch.jsp</result>
+		 </action>
+		 
+		 <action name="GetAttrValue" class="com.docmgmt.struts.actions.search.GetAttributeValueAction" >
+			 <result>/WEB-INF/search/AttributeValue.jsp</result>
+		 </action>
+		 
+		 <action name="ShowAttributeSearchResult" class="com.docmgmt.struts.actions.search.ShowAttributeSearchResultAction" >
+			 <result>/WEB-INF/search/AttributeSearchResult.jsp</result>
+		 </action>
+		 
+		 <action name="DMSSearch" class="com.docmgmt.struts.actions.search.DMSSearchAction">
+		 	
+		 	<result>/WEB-INF/search/DMSSearchForm.jsp</result>
+		 </action>
+		 
+		 <action name="ShowDMSSearchResult" class="com.docmgmt.struts.actions.search.DMSSearchAction" method="showSearchResult">
+		 	<result>/WEB-INF/search/DMSSearchResult.jsp</result>
+		 </action>
+		 
+		 <action name="ProjectLevelSearch" class="com.docmgmt.struts.actions.search.ProjectLevelSearchAction">
+		 	
+		 	<result>/WEB-INF/search/ProjectLevelSearch/ProjectLevelSearchForm.jsp</result>
+		 </action>
+		 
+		 <action name="ShowProjectLevelSearchResult" class="com.docmgmt.struts.actions.search.ProjectLevelSearchAction" method="showSearchResult">
+		 	<result>/WEB-INF/search/ProjectLevelSearch/ProjectLevelSearchResult.jsp</result>
+		 </action>
+ 		
+ 		<action name="timeLineSearch" class="com.docmgmt.struts.actions.search.FullSearch.FullSearchAction" method="timeLineSearch">
+		 	<result>/WEB-INF/search/FullSearch/FullSearch.jsp</result>
+		 </action>
+ 		<action name="contentSearch" class="com.docmgmt.struts.actions.search.FullSearch.FullSearchAction" method="contentSearch">
+		 	<result>/WEB-INF/search/FullSearch/FullSearch.jsp</result>
+		 </action>
+		 <action name="SearchforDateAndKeyword_b" class="com.docmgmt.struts.actions.search.FullSearch.FullSearchAction" method="getSearchResult">  
+		 	<result name="date">/WEB-INF/search/FullSearch/SearchDateResult.jsp</result>
+			<result name="content">/WEB-INF/search/FullSearch/SearchContentResult.jsp</result>		 
+		</action>		 
+	 </package>
+	
+	
+	<!-- ##     Report actions starts here      ## -->
+	 	  	
+	 <package name="Report" extends="framework-default" namespace="/">
+		
+ 		 <action name="ShowDocumentProperties" class="com.docmgmt.struts.actions.reports.ShowDocumentPropertiesAction" >
+			<result>/WEB-INF/reports/DocumentPropertiesReport.jsp</result>
+		 </action>
+		 
+		 <action name="UserRightsReport" class="com.docmgmt.struts.actions.reports.GetUserRightsAction" >
+		 	<interceptor-ref name="user"></interceptor-ref>
+			<result>/WEB-INF/reports/ShowAllWorkspaceForRightsReport.jsp</result>
+		 </action>
+	
+		 <action name="GetNodeDtlForUserRights" class="com.docmgmt.struts.actions.reports.GetAllNodesUserRightsAction">
+			<result>/WEB-INF/reports/ShowNodeDetailForUserRightsReport.jsp</result>
+		 </action>
+		 
+		 <action name="ShowUserRightsReport" class="com.docmgmt.struts.actions.reports.ShowUserRightsReportAction">
+			<result>/WEB-INF/reports/ShowUserRightsReport.jsp</result>
+		 </action>
+		 
+		 <action name="ShowVersions" class="com.docmgmt.struts.actions.reports.ShowVersionReportAction">
+			<interceptor-ref name="user"></interceptor-ref>
+			<result>/WEB-INF/reports/AdminProjectVersionReport.jsp</result>
+		 </action>
+		
+		 <action name="GenerateActivityVersionsReport" class="com.docmgmt.struts.actions.reports.GenerateActivityVersionsReportAction">
+			<result>/WEB-INF/reports/ShowProjectVersionsReport.jsp</result>
+		 </action> 
+		
+		 <action name="ShowversionMaintenance" class="com.docmgmt.struts.actions.reports.ShowVersionMaintenanceAction">
+			<result>/WEB-INF/reports/ShowVersionMaintenance.jsp</result>
+		 </action> 
+		 
+		 <action name="ProjectCommentReport" class="com.docmgmt.struts.actions.reports.ShowWorkspaceForCommentReportAction">
+			<interceptor-ref name="user"></interceptor-ref>
+			<result>/WEB-INF/reports/AdminProjectCommentReport.jsp</result>
+		 </action>
+		 
+		 
+		 <action name="GetActivityDetail" class="com.docmgmt.struts.actions.reports.GetActivityAction">
+			<result>/WEB-INF/reports/ShowActivity.jsp</result>
+		 </action>
+		
+		 <action name="GenerateActivityCommentReport" class="com.docmgmt.struts.actions.reports.GenerateActivityCommentReportAction">
+			<result name="commentreport">/WEB-INF/reports/ShowActivityCommentReport.jsp</result>
+			<result name="fileversionhistoryreport">/WEB-INF/reports/ShowFileVersionCommentReport.jsp</result>
+			<result name="audittrailreport">/WEB-INF/reports/ShowAuditTrailReport.jsp</result>
+		 </action>
+		
+		<action name="GenerateDocSummaryReport" class="com.docmgmt.struts.actions.reports.GenerateTreeReportAction">
+			<interceptor-ref name="user"></interceptor-ref>
+			<result>/WEB-INF/reports/GenerateDocSummaryReport.jsp</result>
+		 </action>
+		
+		<action name="ShowProjectDtl" class="com.docmgmt.struts.actions.reports.ShowWorkspaceDetailAction">
+			<result>/WEB-INF/reports/WorkspaceDetail.jsp</result>
+		</action>
+		
+		<action name="ShowUsersDetails" class="com.docmgmt.struts.actions.reports.ShowUserDetailAction">
+			<result>/WEB-INF/reports/UserDetail.jsp</result>
+		</action>
+		
+		 <action name="DocSummaryTable" class="com.docmgmt.struts.actions.reports.DocSummaryTableAction"> 
+		<!-- <action name="DocSummaryTable"> -->
+			<result>/WEB-INF/reports/DocSummaryTable.jsp</result>
+	
+	
+	
+		</action>
+			<action name="PendingWorks" class="com.docmgmt.struts.actions.reports.PendingReportsAction">
+			<result>/WEB-INF/reports/PendingReports.jsp</result>
+		</action>
+		
+		<action name="ShowPendingWorks" class="com.docmgmt.struts.actions.reports.ShowPendingReportsAction">
+			<result>/WEB-INF/reports/ShowPendingReports.jsp</result>
+		</action>
+	
+		<action name="CompleteWork" class="com.docmgmt.struts.actions.reports.CompletePendingWorksAction">
+				<result type="redirect-action">PendingWorks</result>
+		</action>
+		
+		<action name="ExportToXls" class="com.docmgmt.struts.actions.reports.ExportToXlsAction">
+			<result type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">xlsStream</param>	
+				<param name="contentDisposition">attachment; filename="${fileName}"</param>								
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		<action name="ProjectSnapshot" class="com.docmgmt.struts.actions.labelandpublish.GetWorkspaceAction">
+			<result>/WEB-INF/reports/ProjectSnapshot.jsp</result>
+		</action>
+		<action name="ShowProjectSnapshot_ex" class="com.docmgmt.struts.actions.reports.ShowProjectSnapshotAction">
+			<result type="html">
+        		<param name="htmlContent">htmlContent</param>
+        	</result>
+		</action>
+		
+		<action name="ShowAttrHistory_ex" class="com.docmgmt.struts.actions.reports.ShowProjectSnapshotAction" method="ShowAttrHistory">
+			<result type="html">
+        		<param name="htmlContent">htmlContent</param>
+        	</result>
+		</action>
+		
+		<action name="AdvancedSearch"  class="com.docmgmt.struts.actions.search.Advanced.SearchAction">
+			<result>/WEB-INF/search/Advanced/Search.jsp</result>
+		</action>
+		<action name="SaveUserAttrList_ex"  class="com.docmgmt.struts.actions.search.Advanced.SearchAction" method="saveUserAttrList">
+			<result name="redirect" type="redirect-action">AdvancedSearch</result>
+		</action>
+		<action name="AdvancedSearch*_ex"  class="com.docmgmt.struts.actions.search.Advanced.SearchAction" method="{1}">
+			<result>/WEB-INF/search/Advanced/{1}.jsp</result>
+		</action>
+		
+		<!-- ## Submission Tracking Report Related [Start Here] ## -->
+		<action name="SubmissionTracking" class="com.docmgmt.struts.actions.reports.SubmissionTracking.SubmissionTracking">
+			<result>/WEB-INF/reports/SubmissionTracking/SubTrackingMain.jsp</result>
+		</action>
+		<action name="SubmissionTracking*_ex" class="com.docmgmt.struts.actions.reports.SubmissionTracking.SubmissionTracking" method="{1}">
+			<result>/WEB-INF/reports/SubmissionTracking/SubTrackingSearch.jsp</result>
+			<result name="WorspaceDetail" type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		<!-- ## Submission Tracking Report Related [End Here] ## -->
+		<!--  Sequence Tracking -->
+		<action name="SequenceTracking"
+			class="com.docmgmt.struts.actions.reports.SequenceTracking.SequenceTracking">
+			<result>/WEB-INF/reports/SequenceTracking/SequenceTrackingMain.jsp
+			</result>
+		</action>
+		<action name="SequenceTracking*_ex"
+			class="com.docmgmt.struts.actions.reports.SequenceTracking.SequenceTracking"
+			method="{1}">
+			<result>/WEB-INF/reports/SequenceTracking/SequenceTrackingSearch.jsp
+			</result>
+			<result name="WorspaceDetail" type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+
+		<!-- ## sequence tracking report ended -->
+		<!-- ## Post Sub. Query Mgmt. Report Related [Start Here] ## -->
+		<action name="PostSubQueryReport" class="com.docmgmt.struts.actions.reports.PostSubQueryMgmt.PostSubQueryMgmtReport">
+			<result>/WEB-INF/reports/PostSubQueryMgmt/PostSubQueryMgmtMain.jsp</result>
+		</action>
+		<action name="PostSubQueryReport_ex" class="com.docmgmt.struts.actions.reports.PostSubQueryMgmt.PostSubQueryMgmtReport" method="getReportDetail">
+			<result>/WEB-INF/reports/PostSubQueryMgmt/PostSubQueryMgmtDtl.jsp</result>
+		</action>
+		
+		
+		<!-- ## Post Sub. Query Mgmt. Report Related [End Here] ## -->
+		
+   </package>	
+	
+	
+	 <!-- ##     Operation actions starts here      ## -->
+	 
+	 
+	 <package name="Operations" extends="framework-default" namespace="/">	 
+		<action name="AssignRoleOperations" class="com.docmgmt.struts.actions.roleoperation.AssignRoleOperationsAction" method="initialTreeDisplay">
+			
+			<result>/WEB-INF/roleoperation/AssignRoleOperations.jsp</result>
+		</action>
+		
+		<action name="DisplayTreeAction_ex" class="com.docmgmt.struts.actions.roleoperation.AssignRoleOperationsAction" method="AfterGetUserTypeTreeDisplay">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+		</action>
+		<action name="CopyRoleOperationAction" class="com.docmgmt.struts.actions.roleoperation.AssignRoleOperationsAction" method="SaveRoleOperation">
+				<result>/Message.jsp</result>
+		</action>
+		
+		
+		<action name="GetOperationByUserTypeID" class="com.docmgmt.struts.actions.roleoperation.GetOperationByUserTypeIdAction">
+			<result>/WEB-INF/roleoperation/GetOperationByUserTypeId.jsp</result>
+		</action>
+		
+		<action name="GetParentOperationDetail" class="com.docmgmt.struts.actions.roleoperation.GetParentOperationDetailAction">
+			<result>/WEB-INF/roleoperation/GetParentOperationDetail.jsp</result>
+		</action>
+		
+<!--  		<action name="SaveAsignOperation" class="com.docmgmt.struts.actions.roleoperation.SaveAssignRoleOperationsAction">-->
+<!--  		<result type="redirect-action">AssignRoleOperations</result>-->
+<!-- 		</action>-->
+		
+		<action name="SetOperations" class="com.docmgmt.struts.actions.roleoperation.SetOperationsAction">
+			
+			<result>/WEB-INF/roleoperation/SetOperations.jsp</result>
+		</action>
+		
+		
+		<action name="SaveOperation" class="com.docmgmt.struts.actions.roleoperation.SaveOperationsAction">
+			<result type="redirect-action">SetOperations</result>
+		</action>
+		
+		<action name="DeleteOperation" class="com.docmgmt.struts.actions.roleoperation.DeleteOperationsAction">
+			<result type="redirect-action">SetOperations</result>
+		</action>
+		
+		<action name="EditOperations" class="com.docmgmt.struts.actions.roleoperation.EditOperationsAction">
+			<result>/WEB-INF/roleoperation/EditOperations.jsp</result>
+		</action>
+		
+		<action name="UpdateOperation" class="com.docmgmt.struts.actions.roleoperation.UpdateOperationsAction">
+			<result type="redirect-action">closePopUp</result>
+		</action>
+		
+	</package>
+	
+	<!-- ##     Save Project actions starts here      ## -->
+	
+	 <package name="SaveProject" extends="framework-default" namespace="/">
+	 
+	 	<action name="SaveProject" class="com.docmgmt.struts.actions.saveproject.ShowWorkspaceAction">			
+			<result>/WEB-INF/saveproject/ShowAllProjectForSaveAs.jsp</result>
+		</action>
+		<action name="ReplicateSkeletonProject" class="com.docmgmt.struts.actions.saveproject.ShowWorkspaceAction">					
+			<result> /WEB-INF/saveproject/skeleton/ShowReplicateProjectForSaveAs.jsp</result>
+		</action>
+		<action name="GetWorkSpaceDetail_ex" class="com.docmgmt.struts.actions.saveproject.ShowWorkspaceAction" method="getWorkSpaceDetail">			
+			<result type="html">
+        		<param name="htmlContent">workspaceDetail</param>
+        	</result>
+		</action>				
+		<action name="saveAsProject" class="com.docmgmt.struts.actions.saveproject.SaveWorkspaceAsAction">
+			<interceptor-ref name="completeStack"/>
+	     	<interceptor-ref name="execAndWait">
+	 	 		<param name="delaySleepInterval">50</param>
+	 	 	</interceptor-ref>
+	  		<result name="wait">/wait.jsp</result>
+	  		<result name="exists" type="chain">SaveProject</result>
+			<result name="success">/WEB-INF/saveproject/wsTree.jsp</result>
+		</action>
+		
+		<action name="saveAsSkeletonProject_ex" class="com.docmgmt.struts.actions.saveproject.SaveWorkspaceAsAction" method="saveSkeletonProject">				  			  		
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>				
+			</result>
+		</action>	 
+		
+	 	<action name="CopyProjectFiles" class="com.docmgmt.struts.actions.saveproject.CopyWorkSpaceFileAction">
+			<result type="redirect-action">
+				<param name="actionName">SaveProject</param> 
+				<param name="noOfFilesCopied">${noOfFilesCopied}</param>
+	       	</result>
+		</action>
+	 
+	 </package>
+	<!-- ##     Replication actions starts here      ## -->
+	 <package name="Replication" extends="framework-default" namespace="/">
+	 
+	 	<action name="ReplicateNode" class="com.docmgmt.struts.actions.replication.ReplicationNodeAction">
+			
+			<result>/WEB-INF/replication/ReplicateNode.jsp</result>
+		</action>
+		
+		<action name="ReplicateWorkspaceNodeAttribute" class="com.docmgmt.struts.actions.replication.ReplicationNodeAttributeAction">
+			<result>/WEB-INF/replication/ReplicationNodeAttribute.jsp</result>
+		</action>
+	 
+		 <action name="SaveReplicatedWorkspaceNodeAttribute" class="com.docmgmt.struts.actions.replication.SaveReplicatedWorkspaceNodeAttributeAction">
+			<result type="redirect-action">closePopUp</result>
+		</action>
+	 
+	 </package>
+	 
+	 <!-- ##     nodeWiseAttibutes actions starts here      ## -->
+	 <package name="nodeWiseAttributes" extends="framework-default" namespace="/">
+	 
+	 	
+		<action name="SetAttributesOnNode" class="com.docmgmt.struts.actions.nodeWiseAttributes.SetAttributesOnNodeAction">
+			 <result>/WEB-INF/nodeWiseAttributes/ShowTreeAndAttr.jsp</result>
+		</action>
+	  
+		<action name="ShowAllAttrsOrGroup" class="com.docmgmt.struts.actions.nodeWiseAttributes.GetAttrsOrAttrGroupAction">
+			<result>/WEB-INF/nodeWiseAttributes/ShowAttrOrAttrGroup.jsp</result>
+		</action>
+	  
+	  	<action name="SaveAttributesOnNode" class="com.docmgmt.struts.actions.nodeWiseAttributes.SaveAttributesOnNodeAction">
+			 <!--<result type="redirect-action">/WEB-INF/nodeWiseAttributes/AttributeDisplay.jsp</result>  --> 
+			 <result type="redirect-action">WorkspaceSummay</result>
+		</action>
+	  
+	  	  
+	 </package>
+	
+	  <!-- ##     AttributeGroup actions starts here      ## -->
+	 <package name="AttributeGroup" extends="framework-default" namespace="/">
+	 
+	 	<action name="AddAttributeGroup" class="com.docmgmt.struts.actions.attributegroup.AddAttributeGroupAction">
+			
+			<result>/WEB-INF/attributegroup/AddAttrGroupDetail.jsp</result>
+		</action>
+		
+		<action name="SaveAttributeGroup" class="com.docmgmt.struts.actions.attributegroup.SaveAttrGroupAction">
+   		   <result type="redirect-action">AddAttributeGroup</result>
+   		</action>
+   		
+	  
+	 	<action name="EditAttrGroup" class="com.docmgmt.struts.actions.attributegroup.EditAttrGroupAction">
+			<result>/WEB-INF/attributegroup/EditAttrGroup.jsp</result>
+		</action>
+		
+	  	<action name="UpdateAttributeGroup" class="com.docmgmt.struts.actions.attributegroup.UpdateAttrGroupAction">
+  		   <result type="redirect-action">closePopUp</result>
+  		</action>
+  		
+	  	 
+		<action name="DeleteAttributeGroup" class="com.docmgmt.struts.actions.attributegroup.DeleteAttrGroupAction">
+   		   <result type="redirect-action">AddAttributeGroup</result>
+   		</action>
+   		
+   		<action name="ViewAttrValues" class="com.docmgmt.struts.actions.attributegroup.ViewAttrGroupAction">
+   		   <result>/WEB-INF/attributegroup/ViewAttributeValues.jsp</result>
+   		</action> 
+   		
+   		<action name="AddAttrToGroup" class="com.docmgmt.struts.actions.attributegroup.AddAttrToGroupAction">
+   		   <result>/WEB-INF/attributegroup/AddAttrToGroup.jsp</result>
+   		</action> 
+   		
+   		
+   		<action name="ShowAttributes" class="com.docmgmt.struts.actions.attributegroup.ShowAttributesAction">
+   		   <result>/WEB-INF/attributegroup/ShowAttributes.jsp</result>
+   		</action> 
+   		
+   		<action name="InsertAttrIntoGroup" class="com.docmgmt.struts.actions.attributegroup.InsertAttrIntoGroupAction">
+   		   <result type="redirect-action">closePopUp</result>
+   		</action> 
+   		
+   		
+   		<action name="DeleteAttrValues" class="com.docmgmt.struts.actions.attributegroup.DeleteAttrsValueAction">
+   		   <result type="redirect-action">closePopUp</result>
+   		</action> 
+   		  
+	 </package>
+	
+	
+		  <!-- ##     BulkTemplateAttrValue actions starts here      ## -->
+	 <package name="BulkTemplateAttrValue" extends="framework-default" namespace="/">
+	 	
+	 	<action name="BulkAttrValue" class="com.docmgmt.struts.actions.template.BulkTemplateAttributeValueAction">
+	 			<interceptor-ref name="user"></interceptor-ref>
+	 		   <result>/WEB-INF/template/BulkTemplateAttributeValue.jsp</result>
+	 	</action>
+	
+		<action name="ShowBulkTemplateAttrValue" class="com.docmgmt.struts.actions.template.ShowBulkTemplateAttributeValueAction">
+	 		   <result>/WEB-INF/template/ShowBulkTemplateAttributeValue.jsp</result>
+	 		   <result name="input">/WEB-INF/template/ShowBulkTemplateAttributeValue.jsp</result>
+	 	</action>
+
+	  	<action name="SaveBulkAttrValue" class="com.docmgmt.struts.actions.template.SaveBulkTemplateAttributeValueAction">
+	 		    <result type="redirect-action">BulkAttrValue</result>
+	 	</action>
+	 
+	
+	</package> 
+	
+	
+	 <!-- ##     Stage Master actions starts here      ## -->
+	 <package name="Stage" extends="framework-default" namespace="/">
+		
+ 		 <action name="AddStage" class="com.docmgmt.struts.actions.master.stage.AddStageAction" >
+			
+			<result name="input">/WEB-INF/master/stage/AddStage.jsp</result>	
+			<result>/WEB-INF/master/stage/AddStage.jsp</result>
+		 </action>
+		 
+		 <action name="SaveStage" class="com.docmgmt.struts.actions.master.stage.SaveStageAction">
+   		    <result type="redirect-action">AddStage</result>
+   	   </action>
+   	   
+   	    <action name="EditStage" class="com.docmgmt.struts.actions.master.stage.EditStageAction">
+   		   	<result>/WEB-INF/master/stage/EditStage.jsp</result>
+   	   </action>
+   	   
+   	   <action name="UpdateStage" class="com.docmgmt.struts.actions.master.stage.SaveStageAction" method="UpdateStage">
+  		   <result type="redirect-action">closePopUp</result>
+  		</action>
+  		
+  		<action name="DeleteStage" class="com.docmgmt.struts.actions.master.stage.DeleteStageAction">
+  		  <result type="redirect-action">AddStage</result>
+  		</action>
+	
+	</package>
+	
+	  <!-- ##     User To Template actions starts here      ## -->
+	
+	 <package name="UserToTemplate" extends="framework-default" namespace="/">
+	
+		<action name="AddUserToTemplateForm" class="com.docmgmt.struts.actions.master.user.AddUserToTemplateForm">
+    		<result>/WEB-INF/master/User/AddUserToTemplate/AddUserToTemplateForm.jsp</result>
+    		<interceptor-ref name="user"></interceptor-ref>
+    	</action>
+    	
+    	<action name="ShowUsersOnTemplate" class="com.docmgmt.struts.actions.master.user.ShowUsersOnTemplateAction">
+    		<result>/WEB-INF/master/User/AddUserToTemplate/ShowUsersOnTemplate.jsp</result>
+    	</action>
+    	
+		<action name="AddUserToTemplate" class="com.docmgmt.struts.actions.master.user.AddUserGroupToTemplateAction">
+   			<result type="chain">AddUserToTemplateForm</result>
+   		</action>
+   		
+   		<action name="EditTemplateUser" class="com.docmgmt.struts.actions.master.user.EditTemplateUser">
+   			<result>/WEB-INF/master/User/AddUserToTemplate/EditTemplateUser.jsp</result>
+   		</action>
+   		
+   		<action name="UpdateTemplateUser" class="com.docmgmt.struts.actions.master.user.UpdateTemplateUser">
+   			<result type="redirect-action">closePopUp</result>
+   		</action>
+   		
+   		
+   		 <!-- ##     Nodewise UserRights To Template actions starts here      ## -->
+   		 
+   		<action name="AssignTemplateRights" class="com.docmgmt.struts.actions.template.TemplateAssignRightsAction">
+			<result>/WEB-INF/template/AssignTemplateRights.jsp</result>
+		</action>
+   		
+   		<action name="TemplateRights" class="com.docmgmt.struts.actions.template.SaveTemplateRightsAction">
+			 <result type="redirect-action">closePopUp</result>
+		</action>
+		
+	</package>
+	
+	<package name="Repository" extends="framework-default" namespace="/">
+	
+		<action name="Repository" class="com.docmgmt.struts.actions.repository.CreateRepository">
+    		<result>/WEB-INF/repository/CreateRepository.jsp</result>
+    		<interceptor-ref name="user"></interceptor-ref>
+    	</action>
+	
+		<action name="RepositoryGetWorkspaceSourceTree" class="com.docmgmt.struts.actions.repository.RepositoryGetWorkspaceSourceTreeAction" >
+			<result>/WEB-INF/repository/RepositoryShowSourceWorkspaceTree.jsp</result>
+		</action>
+		 
+		<action name="RepositoryGetWorkspaceDestTree" class="com.docmgmt.struts.actions.repository.RepositoryGetWorkspaceDestTreeAction" >
+			<result>/WEB-INF/repository/RepositoryShowDestWorkspaceTree.jsp</result>
+		</action>
+
+		<action name="RepositoryWorkspaceNodeAttribute" class="com.docmgmt.struts.actions.repository.RepositoryWorkspaceNodeAttribute">
+			<result>/WEB-INF/repository/RepositoryWorkspaceNodeAttribute.jsp</result>
+		</action>
+		
+		<action name="CopyFile" class="com.docmgmt.struts.actions.repository.CopyFileAction">
+			<result>/WEB-INF/workspace/ShowCopyPasteDone.jsp</result>
+		</action>
+</package>
+			<!--       ## Template Export-Import  ##         -->
+			
+	<package name="TemplateImportExport" extends="framework-default" namespace="/">
+		<action name="Templatexml" class="com.docmgmt.struts.actions.template.EditStructure">
+				<interceptor-ref name="user"></interceptor-ref>
+				<result>/WEB-INF/template/TemplateImportExport.jsp</result>
+				<result name="input">/WEB-INF/template/TemplateImportExport.jsp</result>
+		 </action>
+		
+		 <action name="Generatexml" class="com.docmgmt.struts.actions.template.GenerateStructureXML">
+			
+			<result type="chain">Templatexml</result>
+			<result name="OpenXML" type="redirect-action">
+				<param name="actionName">openfile</param>
+				<param name="fileWithPath">${fileWithPath}</param>
+				<param name="attachment">${attachment}</param>
+			</result>
+		 </action>
+	</package>
+
+
+<!-- /* Package Added By : Ashmak Shah
+	  * Added On : 12th may 2009
+	  * Usage : For Editing Hyper Links in pdf documents*/
+	  -->
+ 	<package name="EditingLinks" extends="framework-default" namespace="/">
+	
+		<action name="EditingLinksMain" class="com.docmgmt.struts.actions.hyperlinks.EditingLinksMainAction">
+			<interceptor-ref name="user"></interceptor-ref>
+			<result>/WEB-INF/hyperlinks/EditingLinksMain.jsp</result>
+		</action>
+		
+		<action name="ListFiles" class="com.docmgmt.struts.actions.hyperlinks.ListFilesAction">
+			<result>/WEB-INF/hyperlinks/ListFiles.jsp</result>
+		</action>
+			
+		<action name="ShowLinks" class="com.docmgmt.struts.actions.hyperlinks.ShowLinksAction">
+			<result>/WEB-INF/hyperlinks/ShowLinks.jsp</result>
+		</action>
+		
+		<action name="SetLink" class="com.docmgmt.struts.actions.hyperlinks.SetLinkAction">
+			<result>/Message.jsp</result>
+		</action>
+		
+	</package>
+		 	
+	<!-- /* Package Added By : Ashmak Shah
+	      * Added On : 9th june 2009 */
+	-->	
+	<package name="Submission" extends="framework-default" namespace="/">
+	
+		<action name="SubmissionInfoMain" class="com.docmgmt.struts.actions.labelandpublish.GetWorkspaceAction" >
+			
+			<result>/WEB-INF/labelandpublish/WorkspaceSubmissionInfoMain.jsp</result>
+		 </action>	
+		
+		<action name="ShowSubmissionInfo" class="com.docmgmt.struts.actions.labelandpublish.SubmissionInfoAction" method="show">
+			<result>/WEB-INF/labelandpublish/WorkspaceSubmissionInfo.jsp</result>
+		</action>
+		
+		<action name="AddSubmissionInfo" class="com.docmgmt.struts.actions.labelandpublish.SubmissionInfoAction" method="add">
+			<result name="save">/Message.jsp</result>
+		</action>
+		
+		<action name="PublishAndSubmit" class="com.docmgmt.struts.actions.labelandpublish.PublishAndSubmitAction">			
+			<result>/WEB-INF/labelandpublish/WorkspacePublishAndSubmitMain.jsp</result>			
+			<result name="htmlPublish" type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>	
+		</action>
+		
+		<action name="ShowPublishAndSubmitForm" class="com.docmgmt.struts.actions.labelandpublish.PublishAndSubmitAction" method="getSubmissionDtl">
+			<result>/WEB-INF/labelandpublish/WorkspacePublishAndSubmit.jsp</result>
+			<result name="manualMode">/WEB-INF/labelandpublish/ManualMode/CreateSeq.jsp</result>
+			<result name="htmlPublish" type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		
+		<action name="SavePublishAndSubmitForm" class="com.docmgmt.struts.actions.labelandpublish.PublishAndSubmitAction" method="saveSubmissionDtl">
+			<result name="save">/Message.jsp</result>
+		</action>
+		
+		<action name="RecompileSubmission" class="com.docmgmt.struts.actions.labelandpublish.PublishAndSubmitAction" method="getSubmissionDataForRecompile">
+			<result>/WEB-INF/labelandpublish/RecompileSubmission.jsp</result>
+		</action>
+		
+		<action name="RecompileActionForSubmission" class="com.docmgmt.struts.actions.labelandpublish.PublishAndSubmitAction" method="recompileSubmission">
+			<result name="recompile">/Message.jsp</result>
+		</action>
+		
+		<action name="ConfirmSubmission" class="com.docmgmt.struts.actions.labelandpublish.PublishAndSubmitAction" method="confirmSubmission">
+			<result name="brokenLinks">/WEB-INF/labelandpublish/WorkspaceSubmissionBrokenLinks.jsp</result>
+			<result name="ignore" type="redirect-action">
+				<param name="actionName">ShowPublishAndSubmitForm</param>
+				<param name="workSpaceId">${workSpaceId}</param>
+			</result>
+			<result>/Message.jsp</result>
+		</action>
+		
+		<action name="CheckLinksInSubmission" class="com.docmgmt.struts.actions.labelandpublish.PublishAndSubmitAction" method="checkLinks">
+			<result name="brokenLinks">/WEB-INF/labelandpublish/WorkspaceSubmissionBrokenLinks.jsp</result>
+			<result>/Message.jsp</result>
+		</action>
+		
+		<action name="ViewDetailsOfSubmission" class="com.docmgmt.struts.actions.labelandpublish.PublishAndSubmitAction" method="viewSubmissionDetails">
+			<result>/WEB-INF/labelandpublish/SubmissionDetails.jsp</result>
+		</action>
+		
+		<action name="extractSeq" class="com.docmgmt.struts.actions.labelandpublish.PublishAndSubmitAction" method="extractSeq">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+		</action>
+		<action name="ValidateEctdSubSeq_b" class="com.docmgmt.struts.actions.labelandpublish.PublishAndSubmitAction" method="validateEctdSubSeq">
+			<result>/Message.jsp</result>
+			<result name="error">/WEB-INF/ImportProjects/ECTD/ErrorLog.jsp</result>
+		</action>
+		
+		<action name="folderSizeAction_ex" class="com.docmgmt.struts.actions.labelandpublish.FolderSizeAction">
+        	<result type="html">
+        		<param name="htmlContent">htmlContent</param>
+        	</result>
+        </action>
+        
+        <action name="deleteFolderAction_ex" class="com.docmgmt.struts.actions.labelandpublish.DeleteFolderAction">
+        	<result type="html">
+        		<param name="htmlContent">htmlContent</param>
+        	</result>
+        </action>
+        
+        <action name="PreValidation_ex" class="com.docmgmt.struts.actions.labelandpublish.PreValidation.PreValidationAction">
+        	<result>/WEB-INF/labelandpublish/PreValidation/PreValidation.jsp</result>
+        </action>
+        
+        <action name="saveAttrDtl_ex" class="com.docmgmt.struts.actions.labelandpublish.PreValidation.savaData">
+        	<result type="html">
+        		<param name="htmlContent">htmlContent</param>
+        	</result>			
+        </action>
+        <action name="GetDescriptionDataForCA_ex"
+			class="com.docmgmt.struts.actions.labelandpublish.CASequenceDescriptionData"
+			method="getSequenceDescriptionData_CA">
+		</action>
+        <action name="GetDescriptionData_ex"
+			class="com.docmgmt.struts.actions.labelandpublish.AUSequenceDescriptionData"
+			method="getSequenceDescriptionData">
+		</action>
+		 
+	</package>
+	
+	<package name="RepeatSection" extends="framework-default" namespace="/">
+	
+		<action name="RepeatSection" class="com.docmgmt.struts.actions.RepeatSection.RepeatSectionAction">
+			<result>/WEB-INF/RepeatSection/RepeatSection.jsp</result>
+		</action>
+		<action name="SaveSection" class="com.docmgmt.struts.actions.RepeatSection.RepeatSectionAction" method="saveSection">
+			<result name="show" type="redirect-action">
+				<param name="actionName">RepeatSection</param>
+				<param name="repeatNodeId">${repeatNodeId}</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>							
+			<result type="redirect-action">closePopUp</result>			
+		</action>
+		<action name="EditSection" class="com.docmgmt.struts.actions.RepeatSection.RepeatSectionAction" method="editLeafNode">
+			<result>/WEB-INF/RepeatSection/EditLeafNode.jsp</result>
+		</action>
+		<action name="UpdateSection" class="com.docmgmt.struts.actions.RepeatSection.RepeatSectionAction" method="updateLeafNode">
+			<result type="redirect-action">closePopUp</result>
+		</action>
+		<action name="CheckRepeatNodes_b" class="com.docmgmt.struts.actions.RepeatSection.CheckRepeatNodesAction">
+			<result name="html" type="html">
+				<param name="htmlContent">htmlContent</param>				
+			</result>						
+		</action>
+	</package>
+	
+	<package name="EuropeanSubmission" extends="framework-default" namespace="/">
+		<action name="AddCMS_ex" class="com.docmgmt.struts.actions.labelandpublish.europeansubmission.cms.ManageCMSAction">
+			<result>/WEB-INF/labelandpublish/europeansubmission/cms/AddCMS.jsp</result>		
+		</action>
+		
+		<action name="SaveCMS_ex" class="com.docmgmt.struts.actions.labelandpublish.europeansubmission.cms.ManageCMSAction" method="save">
+			<result name="html" type="html">
+				<param name="htmlContent">htmlContent</param>				
+			</result>	
+		</action>
+		
+		<action name="RemoveCMS_ex" class="com.docmgmt.struts.actions.labelandpublish.europeansubmission.cms.ManageCMSAction" method="remove">
+			<result name="html" type="html">
+				<param name="htmlContent">htmlContent</param>				
+			</result>	
+		</action>
+		
+		<action name="GetCountryAgencies_ex" class="com.docmgmt.struts.actions.labelandpublish.europeansubmission.cms.ManageCMSAction" method="getCountryAgencies">
+		
+		</action>
+		
+		<action name="updateCMSTrackNo_ex" class="com.docmgmt.struts.actions.labelandpublish.europeansubmission.cms.ManageCMSAction" method="updateCMSTrackNo">
+			<result name="html" type="html">
+				<param name="htmlContent">htmlContent</param>				
+			</result>	
+		</action>
+	</package>
+	
+	<package name="SrcDoc" extends="framework-default" namespace="/">
+		<action name="editSrcDoc" class="com.docmgmt.struts.actions.workspace.SrcDoc.SrcDocAction" method="edit">
+			<result>/WEB-INF/workspace/SrcDoc/EditSrcDoc.jsp</result>
+		</action>
+		<action name="saveSrcDoc" class="com.docmgmt.struts.actions.workspace.SrcDoc.SrcDocAction" method="save">
+			<result type="redirect-action">
+				<param name="actionName">workspaceNodeAttrAction</param> 
+				<param name="nodeId">${nodeId}</param>
+			</result>
+		</action>
+	</package>
+	
+	<package name="ManualMode" extends="framework-default" namespace="/">
+		<action name="ShowTreeForPublish" class="com.docmgmt.struts.actions.labelandpublish.ManualMode.ManualModeTreeAction" method="showTree">
+			<result>/WEB-INF/labelandpublish/ManualMode/ManualModeTree.jsp</result>
+		</action>
+		<action name="CreateManualProject" class="com.docmgmt.struts.actions.workspace.ManualMode.CreateProjectAction">
+			
+			<result>/WEB-INF/workspace/ManualMode/CreateManualProject.jsp</result>
+		</action>
+		<action name="SaveManualProject" class="com.docmgmt.struts.actions.workspace.ManualMode.CreateProjectAction" method="saveManualProject">
+			<result>/WEB-INF/workspace/ManualMode/SeqZipUploads.jsp</result>
+			<result name="exists">/Message.jsp</result>
+		</action>
+		<action name="UploadedFile" class="com.docmgmt.struts.actions.workspace.ManualMode.CreateProjectAction" method="saveUploadedFile">
+			<result type="redirect-action">
+				<param name="actionName">CreateManualProject</param> 
+				<param name="msg">${msg}</param></result>
+		</action>
+		
+	</package>
+	
+	<package name="PDFPublish" extends="framework-default" namespace="/">
+		<action name="PublishProject" class="com.docmgmt.struts.actions.labelandpublish.GetWorkspaceAction">
+			
+			<result>/WEB-INF/labelandpublish/PDFPublish/PublishProject.jsp</result>
+		</action>
+		<action name="MergePDFDisplayDocs" class="com.docmgmt.struts.actions.labelandpublish.PDFPublish.DisplayDocuments">
+			<result>/WEB-INF/labelandpublish/PDFPublish/DisplayPDFFiles.jsp</result>
+		</action>
+		<action name="MergePDFs" class="com.docmgmt.struts.actions.labelandpublish.PDFPublish.PdfMergeAction">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+		</action>
+		
+	</package>
+	<package name="HTMLPublish" extends="framework-default" namespace="/">
+		<action name="HTMLPublishProject" class="com.docmgmt.struts.actions.labelandpublish.GetWorkspaceAction">
+			
+			<result>/WEB-INF/labelandpublish/HTMLPublish/HTMLPublishAndSubmitMain.jsp</result>
+		</action>
+		
+		<action name="ShowHTMLPublishAndSubmitForm" class="com.docmgmt.struts.actions.labelandpublish.HTMLPublish.HTMLPublishAndSubmitAction" method="getSubmissionDetails">
+			<result>/WEB-INF/labelandpublish/HTMLPublish/HTMLPublishAndSubmit.jsp</result>
+		</action>
+		
+		<action name="SaveHTMLPublishAndSubmitForm" class="com.docmgmt.struts.actions.labelandpublish.HTMLPublish.HTMLPublishAndSubmitAction" method="saveSubmissionDetails">
+			<result>/Message.jsp</result>
+		</action>
+		
+		<action name="ShowLogo_b" class="com.docmgmt.struts.actions.labelandpublish.HTMLPublish.HTMLPublishAndSubmitAction" method="showLogo">
+			<result type="stream">
+			<param name="contentType">${contentType}</param>
+			<param name="inputName">logoStream</param>
+			<param name="contentDisposition">${contentDisposition}</param>
+			<param name="bufferSize">1024</param>
+			</result>
+		</action>
+	</package>
+		
+	<package name="ImportProjects" extends="framework-default" namespace="/">
+		<action name="ImportProject" class="com.docmgmt.struts.actions.saveproject.ShowWorkspaceAction">
+			
+			<result>/WEB-INF/ImportProjects/ImportProject.jsp</result>
+		</action>
+		<action name="CreateImportProject" class="com.docmgmt.struts.actions.ImportProjects.ImportProjectAction">
+   		    <result type="chain">ImportProject</result>
+   		    <result type="chain" name="input">ImportProject</result>
+		</action>
+		<action name="ImportECTDProject" class="com.docmgmt.struts.actions.ImportProjects.ECTD.ImportECTDProject">
+			
+			<result>/WEB-INF/ImportProjects/ECTD/ImportECTDProject.jsp</result>
+		</action>
+		<action name="uploadECTDProject_b" class="com.docmgmt.struts.actions.ImportProjects.ECTD.ImportECTDProject" method="upload0000Seq">
+			<result name="error" type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+			<result>/WEB-INF/ImportProjects/ECTD/ErrorLog.jsp</result>
+		</action>
+		<action name="showImportFrm_b" class="com.docmgmt.struts.actions.saveproject.ShowWorkspaceAction">
+			<result>/WEB-INF/ImportProjects/ECTD/ImportFrm.jsp</result>
+		</action>
+	</package>
+	
+	<package name="WelcomePage" extends="framework-default" namespace="/">
+		
+		<action name="DefaultWorkSpace_b" class = "com.docmgmt.struts.actions.WelcomePage.DefaultWorkSpace.DefaultWorkspaceAction">
+			<result>/WEB-INF/WelcomePage/DefaultWorkSpace/DefaultWorkSpace.jsp</result>
+		</action>
+		<action name="SaveDefaultWorkSpace" class = "com.docmgmt.struts.actions.WelcomePage.DefaultWorkSpace.DefaultWorkspaceAction" method="SaveDefaultWorkSpace">
+	 			<result type="redirect-action">DefaultWorkSpace_b</result>
+	 			<result name="input" type="chain">DefaultWorkSpace_b</result>		 		
+		</action>
+		
+		<action name="cal_b" class="com.docmgmt.struts.actions.WelcomePage.cal.CalendarAction">
+			<result>/WEB-INF/WelcomePage/cal/cal.jsp</result>
+		</action>
+		
+		<action name="calsetevtattr_b" class="com.docmgmt.struts.actions.WelcomePage.cal.CalendarAction" method="setEventAttributes">
+			<result type="redirect-action">Welcome</result>
+		</action>
+		
+		<action name="calsetremattr_b" class="com.docmgmt.struts.actions.WelcomePage.cal.CalendarAction" method="setReminderAttributes">
+			<result type="redirect-action">Welcome</result>
+		</action>		
+	
+		<action name="ShowComments_ex" class="com.docmgmt.struts.actions.WelcomePage.comments.ShowComments">
+			<result>/WEB-INF/WelcomePage/comments/ShowComments.jsp</result>
+		</action>
+		
+		<action name="MarkAsRead_ex" class="com.docmgmt.struts.actions.WelcomePage.comments.ShowComments" method="markAsRead">			
+		</action>
+		
+		<action name="GetNodePath_ex" class="com.docmgmt.struts.actions.WelcomePage.comments.ShowComments" method="getNodeStrucure">			
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		
+		<action name="ReplyComment_ex" class="com.docmgmt.struts.actions.WelcomePage.comments.ShowComments" method="sendReply">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>			
+		</action>
+		<action name="DeleteComment_ex" class="com.docmgmt.struts.actions.WelcomePage.comments.ShowComments" method="deleteComment">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>					
+		</action>
+		<action name="GetRecComments_ex" class="com.docmgmt.struts.actions.WelcomePage.comments.ShowComments" method="getReceivedComments">
+			<result>/WEB-INF/WelcomePage/comments/ShowRecComments.jsp</result>
+		</action>		
+		
+		<action name="MarkReminderAsDone_ex" class="com.docmgmt.struts.actions.WelcomePage.reminders.MarkReminderAsDone">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+			<result name="error" type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		
+		<action name="MarkReminderAsIgnore_ex" class="com.docmgmt.struts.actions.WelcomePage.reminders.MarkReminderAsIgnore">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+			<result name="error" type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		
+		<action name="MarkReminderAsUnIgnore_ex" class="com.docmgmt.struts.actions.WelcomePage.reminders.MarkReminderAsUnIgnore">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+			<result name="error" type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		
+		<action name="ShowReminders_ex" class="com.docmgmt.struts.actions.WelcomePage.reminders.ShowReminders">
+			<result>/WEB-INF/WelcomePage/reminders/ShowReminders.jsp</result>
+		</action>		
+	</package>
+	
+	<package name="Notice" extends="framework-default" namespace="/">
+		<action name="ShowNotices" class="com.docmgmt.struts.actions.Notice.ShowNoticesAction" method="showNotices">
+			<result>/WEB-INF/Notice/ShowNotices.jsp</result>
+		</action>
+		
+		<action name="AddNotice" class="com.docmgmt.struts.actions.Notice.AddNoticeAction">
+			<result type="redirect-action">ShowNotices</result>
+		</action>
+		
+		<action name="SaveNotice" class="com.docmgmt.struts.actions.Notice.SaveNoticeAction">
+			<result type="redirect-action">ShowNotices</result>
+		</action>
+	</package>	
+	
+	<package name="DynamicMaster" extends="framework-default" namespace="/">
+		<action name="UploadXls" class="com.docmgmt.struts.actions.ImportProjects.xls.ImportXlsFile">
+			<result>/WEB-INF/DynamicMaster/UploadXls.jsp</result>
+		</action>
+		<action name="InitialUpload_ex" class="com.docmgmt.struts.actions.ImportProjects.xls.ImportXlsFile" method="initialUpload">
+			<result name="initialUpload">/WEB-INF/DynamicMaster/ConfirmMetadata.jsp</result>
+			<result name="error">/WEB-INF/DynamicMaster/Error.jsp</result>
+		</action>
+		<action name="DBImport_ex" class="com.docmgmt.struts.actions.ImportProjects.xls.ImportXlsFile" method="dbImport">
+			<result>/WEB-INF/DynamicMaster/DBImport.jsp</result>
+			<result name="error">/WEB-INF/DynamicMaster/Error.jsp</result>
+		</action>
+		<action name="CheckTableExists_ex" class="com.docmgmt.struts.actions.ImportProjects.xls.ImportXlsFile" method="checkTableExists">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		<action name="GetTableList" class="com.docmgmt.struts.actions.ImportProjects.xls.ImportXlsFile" method="xlsTableList">
+			<result>/WEB-INF/DynamicMaster/XlsTableList.jsp</result>
+		</action>
+		<action name="GetTableDetails_ex" class="com.docmgmt.struts.actions.ImportProjects.xls.ImportXlsFile" method="showTableDetails">
+			<result>/WEB-INF/DynamicMaster/TableDetails.jsp</result>
+			<result name="addAttr" type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		<action name="GetTableData_ex" class="com.docmgmt.struts.actions.ImportProjects.xls.ImportXlsFile" method="displayTableData">
+			<result>/WEB-INF/DynamicMaster/TableData.jsp</result>
+		</action>
+		<action name="SaveTableRecord_ex" class="com.docmgmt.struts.actions.ImportProjects.xls.ImportXlsFile" method="saveTableRecord">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		<action name="AddTableRecord_ex" class="com.docmgmt.struts.actions.ImportProjects.xls.ImportXlsFile" method="addTableRecord">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>			
+	</package>
+	
+	<package name="SubmissionQueryMgmt"  extends="framework-default" namespace="/">
+		<action name="ShowPostSubQueryMgmt" class="com.docmgmt.struts.actions.workspace.SubQueryMgmt.ShowPostSubQueryMgmtAction">
+			<result>/WEB-INF/workspace/SubQueryMgmt/ShowPostSubQueryMgmt.jsp</result>
+		</action>
+		
+		<action name="PostSubQueryMgmt_b" class="com.docmgmt.struts.actions.workspace.SubQueryMgmt.PostSubQueryMgmtAction" >
+			<result>/WEB-INF/workspace/SubQueryMgmt/PostSubQueryMgmt.jsp</result>
+			<result name="CHANGESTATUS">/WEB-INF/workspace/SubQueryMgmt/ChangeQueryStatus.jsp</result>
+		</action>
+		<action name="SaveQueryDetails_ex" class="com.docmgmt.struts.actions.workspace.SubQueryMgmt.PostSubQueryMgmtAction" method="saveQuery">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		<action name="GetWorkspaceTree_ex" class="com.docmgmt.struts.actions.workspace.SubQueryMgmt.PostSubQueryMgmtAction" method="getWorkspaceTree">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		<action name="ShowQueryDetails_ex" class="com.docmgmt.struts.actions.workspace.SubQueryMgmt.ShowQueryDetailsAction">
+			<result>/WEB-INF/workspace/SubQueryMgmt/ShowQueryDetails.jsp</result>
+		</action>
+		<action name="SubQueryMgmtOrder_ex" class="com.docmgmt.struts.actions.workspace.SubQueryMgmt.SubQueryTabAction">
+			<result>/WEB-INF/workspace/SubQueryMgmt/SubQueryTabMgmtOrder.jsp</result>
+		</action>
+		
+	</package>
+	<package name="PublishAndSubmitDMS" extends="framework-default" namespace="/">
+		<action name="PublishAndSubmitDMS" class="com.docmgmt.struts.actions.labelandpublish.DMSPublish.PublishAndSubmitDMSAction">
+				<result>/WEB-INF/labelandpublish/DMSPublish/PublishAndSubmitDMS.jsp</result>
+		</action>		
+		<action name="PublishAndSubmitDMS_ex" class="com.docmgmt.struts.actions.labelandpublish.DMSPublish.PublishAndSubmitDMSAction" method="getWorkspaceSubDtl">		
+				<result>/WEB-INF/labelandpublish/DMSPublish/ShowPublishAndSubmitDMSForm.jsp</result>
+		</action>	
+		<action name="SaveDMSSubmissionDtl_ex" class="com.docmgmt.struts.actions.labelandpublish.DMSPublish.PublishAndSubmitDMSAction" method="saveSubmissionDtl">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>		
+		<action name="confirmDMSPubSeq_ex" class="com.docmgmt.struts.actions.labelandpublish.DMSPublish.PublishAndSubmitDMSAction" method="confirmDMSPublishedSeq">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		<action name="getConfirmedNodeTree_ex" class="com.docmgmt.struts.actions.labelandpublish.DMSPublish.PublishAndSubmitDMSAction" method="getTreeNodes">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+	</package>	
+	
+	<package name="DossierStatusTab" extends="framework-default" namespace="/">	
+		<action name="DossierStatusTab_ex" class="com.docmgmt.struts.actions.WelcomePage.DossierStatus.DossierStatusTabAction" method="defaultCallForGraph">		
+				<result>/WEB-INF/WelcomePage/DossierStatus/DossierStatusStackBarChart.jsp</result>
+				<result name="AllSelect">/WEB-INF/WelcomePage/DossierStatus/DossierStatusAllSelect.jsp</result>
+		</action>		
+		<action name="DossierStatusTabAction_ex" class="com.docmgmt.struts.actions.WelcomePage.DossierStatus.DossierStatusTabAction">		
+				<result>/WEB-INF/WelcomePage/DossierStatus/DossierStatusChartOnChange.jsp</result>
+		</action>
+		<action name="WorkSpaceDetailAction_ex" class="com.docmgmt.struts.actions.WelcomePage.DossierStatus.DossierStatusTabAction" method="workSpaceDetail">		
+				<result>/WEB-INF/WelcomePage/DossierStatus/WorkSpaceDetail.jsp</result>
+		</action>	
+	</package>
+	
+	<package name="DMSUserRepository" extends="framework-default" namespace="/">
+		<action name="CreateProject" class="com.docmgmt.struts.actions.DMSUserRepository.CreateProjectAction">
+			<result>/WEB-INF/DMSUserRepository/CreateProject.jsp</result>
+		</action>
+		<action name="SaveProject_ex" class="com.docmgmt.struts.actions.DMSUserRepository.SaveProjectAction">
+			<result type="redirect-action">CreateProject</result>
+		</action>
+		 <action name="EditProject" class="com.docmgmt.struts.actions.DMSUserRepository.EditProjectAction" >
+				<result>/WEB-INF/DMSUserRepository/EditProject.jsp</result>
+		 </action>
+		 
+		 <action name="UpdateProject" class="com.docmgmt.struts.actions.DMSUserRepository.UpdateProjectAction">
+  		   <result type="redirect-action">CreateProject</result>
+  		</action>
+		<action name="ManageCategory" class="com.docmgmt.struts.actions.DMSUserRepository.ProjectAction">
+			<result>/WEB-INF/DMSUserRepository/Project.jsp</result>
+		</action>
+		<action name="ShowCategorySummary_ex" class="com.docmgmt.struts.actions.DMSUserRepository.ShowCategorySummaryAction">
+			<result>/WEB-INF/DMSUserRepository/ShowCategorySummary.jsp</result>
+		</action>
+		<action name="AddEditCategory_ex" class="com.docmgmt.struts.actions.DMSUserRepository.AddEditCategoryAction">
+			<result>/WEB-INF/DMSUserRepository/AddEditCategory.jsp</result>
+		</action>
+		<action name="ShowCatDocHistory_ex" class="com.docmgmt.struts.actions.DMSUserRepository.AddEditCategoryAction" method="getHistory">
+			<result>/WEB-INF/DMSUserRepository/ShowCatDocHistory.jsp</result>
+		</action>
+		<action name="SaveCategory_ex" class="com.docmgmt.struts.actions.DMSUserRepository.SaveCategoryAction">
+			 <result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		<action name="GetUsers_ex" class="com.docmgmt.struts.actions.DMSUserRepository.AddEditCategoryAction" method="getUsers">
+			<result>/WEB-INF/DMSUserRepository/GetUsers.jsp</result>
+		</action>
+		<action name="AddDoc" class="com.docmgmt.struts.actions.DMSUserRepository.AddDocAction">
+			<result>/WEB-INF/DMSUserRepository/AddDoc.jsp</result>
+		</action>
+		<action name="ShowDtls*_ex" class="com.docmgmt.struts.actions.DMSUserRepository.AddDocAction" method="{1}">
+			<result>/WEB-INF/DMSUserRepository/ShowCategoryDtl.jsp</result>
+			<result name="RELEASEDOC">/WEB-INF/DMSUserRepository/ReleaseDoc.jsp</result>
+			<result name="CategoryDetails" type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		<action name="SaveDoc_ex" class="com.docmgmt.struts.actions.DMSUserRepository.SaveDocAction">
+			<result type="html">
+			<param name="htmlContent">htmlContent</param>
+			</result>
+			
+		</action>
+		<!--<action name="AddUsers" class="com.docmgmt.struts.actions.DMSUserRepository.AddUsersAction">
+			<result>/WEB-INF/DMSUserRepository/AddUsers.jsp</result>
+		</action>
+		--><action name="SelectUsers_ex" class="com.docmgmt.struts.actions.DMSUserRepository.SelectUsersAction">
+			<result>/WEB-INF/DMSUserRepository/SelectUsers.jsp</result>
+		</action>
+		<action name="ShowUsers_ex" class="com.docmgmt.struts.actions.DMSUserRepository.ShowUsersAction">
+			<result>/WEB-INF/DMSUserRepository/ShowUsers.jsp</result>
+		</action>
+		<action name="ShowDoc" class="com.docmgmt.struts.actions.DMSUserRepository.ShowDocAction">
+			<result>/WEB-INF/DMSUserRepository/ShowDocMain.jsp</result>
+		</action>
+		<action name="ShowDocDtl*_ex" class="com.docmgmt.struts.actions.DMSUserRepository.ShowDocAction" method="{1}">
+			<result>/WEB-INF/DMSUserRepository/ShowDocDtl.jsp</result>
+			<result name="CategoryDtls" type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		<action name="DocIdDtls_ex" class="com.docmgmt.struts.actions.DMSUserRepository.ShowDocAction" method="getDocIdDtls">
+			<result>/WEB-INF/DMSUserRepository/ShowDocId.jsp</result>
+		</action>
+		<action name="EditDoc_ex" class="com.docmgmt.struts.actions.DMSUserRepository.EditDocAction" >
+			<result>/WEB-INF/DMSUserRepository/EditDoc.jsp</result>
+			<result name="User">/WEB-INF/DMSUserRepository/ShowComments.jsp</result>
+		</action>
+		<action name="ShowAuthors_ex" class="com.docmgmt.struts.actions.DMSUserRepository.ShowAuthorsAction">
+			<result>/WEB-INF/DMSUserRepository/ShowAuthors.jsp</result>
+		</action>
+		<action name="SaveAuthors_ex" class="com.docmgmt.struts.actions.DMSUserRepository.SaveAuthorsAction">
+			 <result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+		<action name="EditComments_ex" class="com.docmgmt.struts.actions.DMSUserRepository.EditCommentsAction">
+			<result>/WEB-INF/DMSUserRepository/EditComments.jsp</result>
+		</action>
+		<action name="SaveComments_ex" class="com.docmgmt.struts.actions.DMSUserRepository.EditCommentsAction" method="saveUserComments">
+			 <result type="redirect-action">ShowDocDtl*_ex</result>
+		</action>
+		<action name="EditDocAttr_ex" class="com.docmgmt.struts.actions.DMSUserRepository.EditDocAttrAction">
+			 <result>/WEB-INF/DMSUserRepository/EditDocAttr.jsp</result>
+		</action>
+		<action name="SaveDocAttr_ex" class="com.docmgmt.struts.actions.DMSUserRepository.EditDocAttrAction" method="saveDocAttribute">
+			 <result type="redirect-action">EditDoc_ex</result>
+		</action>
+		<action name="ChangeStage_ex" class="com.docmgmt.struts.actions.DMSUserRepository.ChangeStageAction">
+			 <result type="redirect-action">EditDoc_ex</result>
+		</action>
+		<action name="DocReleaseTrack" class="com.docmgmt.struts.actions.DMSUserRepository.DocReleaseTrackAction">
+			 <result>/WEB-INF/DMSUserRepository/DocReleaseTrack.jsp</result>
+		</action>
+		<action name="GetReleasedNodeDetail_ex" class="com.docmgmt.struts.actions.DMSUserRepository.DocReleaseTrackAction" method="getReleasedNodes">
+			 <result type="html"><param name="htmlContent">htmlContent</param></result>
+		</action>
+		<action name="GetReleasedDocDetail_ex" class="com.docmgmt.struts.actions.DMSUserRepository.DocReleaseTrackAction" method="getReleasedDocuments">
+			 <result>/WEB-INF/DMSUserRepository/DocReleaseTrackDtl.jsp</result>
+		</action>
+		<action name="EditDocAction_ex" class="com.docmgmt.struts.actions.DMSUserRepository.ReleaseDocMgmtAction">
+			 <result>/WEB-INF/DMSUserRepository/DocAction.jsp</result>
+		</action>
+		<action name="SaveDocAction_ex" class="com.docmgmt.struts.actions.DMSUserRepository.ReleaseDocMgmtAction" method="saveDtl">
+			 <result type="html"><param name="htmlContent">htmlContent</param></result>
+		</action>
+		<action name="DocActionMain" class="com.docmgmt.struts.actions.DMSUserRepository.ReleaseDocMgmtAction" method="getWorkspaceDetail">
+			<result>/WEB-INF/DMSUserRepository/ShowDocActionMain.jsp</result>
+		</action>
+		<action name="DocActionDtl_ex" class="com.docmgmt.struts.actions.DMSUserRepository.ReleaseDocMgmtAction" method="getDtl">
+			<result>/WEB-INF/DMSUserRepository/ShowDocActionDtl.jsp</result>
+		</action>
+		<action name="getDocIdDtl_ex" class="com.docmgmt.struts.actions.DMSUserRepository.ReleaseDocMgmtAction" method="getDocId">
+			<result type="html"><param name="htmlContent">htmlContent</param></result>
+		</action>
+		<action name="getCatDtl_ex" class="com.docmgmt.struts.actions.DMSUserRepository.ReleaseDocMgmtAction" method="getCatDtl">
+			<result type="html"><param name="htmlContent">htmlContent</param></result>
+		</action>		
+		
+		
+	</package>
+
+	<!--eCTD Viewer -->
+	<package name="pkgectdviewer" namespace="/" extends="framework-default">
+		<action name="openectdviewer" class="com.docmgmt.struts.actions.ectdviewer.common.OpenUploader">
+			<result>/WEB-INF/ectdviewer/index.jsp</result>
+			<result name="error">/WEB-INF/ectdviewer/ectdviewererror.jsp</result>
+		</action>
+		<action name="ectdviewer_ex" class="com.docmgmt.struts.actions.ectdviewer.xmlread.XmlReadAction">
+			<result>/WEB-INF/ectdviewer/ectdViewer.jsp</result>
+			<result name="error">/WEB-INF/ectdviewer/ectdviewererror.jsp</result>
+		</action>
+		<action name="uploadDossierFileAction" class="com.docmgmt.struts.actions.ectdviewer.xmlread.FileManager">
+			<result name="success">/WEB-INF/ectdviewer/ectdViewer.jsp</result>
+			<result name="error">/WEB-INF/ectdviewer/ectdviewererror.jsp</result>
+		</action>
+		<action name="generateTree_ex" class="com.docmgmt.struts.actions.ectdviewer.xmlread.XmlReadAction">
+			<result>/WEB-INF/ectdviewer/tree.jsp</result>
+			<result name="error">/WEB-INF/ectdviewer/ectdviewererror.jsp</result>
+		</action>
+		<action name="openViewerFile_ex" class="com.docmgmt.struts.actions.ectdviewer.common.OpenFileAction">
+			<result type="stream">
+				<param name="contentType">${contentType}</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">${contentDisposition}</param>
+				<param name="bufferSize">1024</param>
+			</result>
+			<result name="error">/WEB-INF/ectdviewer/ectdviewererror.jsp</result>
+		</action>
+		<action name="openToolTip_ex" class="com.docmgmt.struts.actions.ectdviewer.xmlread.XmlReadAction"
+			method="readToolTip">
+			<result>/WEB-INF/ectdviewer/tooltipData.jsp</result>
+			
+		</action>
+
+		<action name="ViewAllDossier" class="com.docmgmt.struts.actions.ectdviewer.xmlread.FileManager"
+			method="takeAllProject">
+			<result>/WEB-INF/ectdviewer/AllDossier.jsp</result>
+			<result name="error">/WEB-INF/ectdviewer/ectdviewererror.jsp</result>
+		</action>
+		<action name="deleteDossier_ex" class="com.docmgmt.struts.actions.ectdviewer.xmlread.FileManager"
+			method="deleteProjects">
+			<result>/WEB-INF/ectdviewer/AllDossier.jsp</result>
+		</action>
+		
+		<action name="generateFullTreeView_ex" class="com.docmgmt.struts.actions.ectdviewer.xmlread.GenerateFullTreeView">
+			<result>/WEB-INF/ectdviewer/tree.jsp</result>
+			<result name="error">/WEB-INF/ectdviewer/ectdviewererror.jsp</result>
+		</action>
+		
+		<action name="uploadNextSequence_ex"
+			class="com.docmgmt.struts.actions.ectdviewer.xmlread.FileManager" method="uploadNextSequence">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+			
+		</action>
+		
+	</package>
+
+<package name="AddHyperLinks" extends="framework-default"
+		namespace="/">
+
+		<action name="AddHyperLinks"
+			class="com.docmgmt.struts.actions.addhyperlinks.AddHyperLinksMainAction">
+			<!--<interceptor-ref name="user"></interceptor-ref>
+			--><result>/WEB-INF/addhyperlinks/AddHyperLinksMain.jsp</result>
+		</action>
+		
+		<action name="ShowProjectDetails_ex"
+			class="com.docmgmt.struts.actions.addhyperlinks.ShowProjectDetailsMainAction"
+			method="getSubmissionDtl">
+			<result>/WEB-INF/addhyperlinks/ShowProjectDetailsMain.jsp
+			</result>		
+		</action>
+		
+		<action name="AddHyperLinkMain"	
+			class="com.docmgmt.struts.actions.addhyperlinks.AddHyperLink">
+			<!--<interceptor-ref name="user"></interceptor-ref>
+			--><result>/WEB-INF/addhyperlinks/AddHyperLink.jsp</result>
+		</action>
+		
+		
+		<action name="AutoCorrectPdfPropertiesMain_ex"	
+			class="com.docmgmt.struts.actions.addhyperlinks.AutoCorrectPdfProperties">
+			<result type="html">
+				<param name="htmlContent">htmlContent</param>
+			</result>
+		</action>
+	
+	</package>
+
+	<!--
+	<package name="Test" extends="framework-default" namespace="/">
+		<action name="Autocompleter" class="com.docmgmt.struts.actions.autocompleter.AutocompleterAction">
+			<result type="stream">
+			<param name="contentType">application/json</param>
+			<param name="inputName">inputStream</param>
+			<param name="bufferSize">1024</param>
+			</result>
+		</action>
+	</package>
+	-->	
+</struts>

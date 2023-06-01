@@ -1,0 +1,55 @@
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+
+<field name="attributeName" >
+	<field-validator type="requiredstring" short-circuit="true">
+        	<param name="trim">true</param>
+            <message>Attribute Name is required</message>
+        </field-validator>
+ 
+ 	<field-validator type="stringlength">
+ 		<param name="minLength">1</param>
+             <param name="maxLength">50</param>
+             <param name="trim">true</param>
+         <message>Attribute Name not more than 50 character</message>
+ 	</field-validator>
+</field>
+
+<field name="attributeType">
+	<field-validator type="requiredstring">
+        	<param name="trim">true</param>
+            <message>Input Type is required</message>
+        </field-validator>
+</field>
+
+<field name="attrForIndiId">
+	<field-validator type="requiredstring">
+        	<param name="trim">true</param>
+            <message>Attribute Type is required</message>
+        </field-validator>
+</field>
+
+<field name="userTypeCode">
+	<field-validator type="requiredstring">
+        	<param name="trim">true</param>
+            <message>User Type is required</message>
+        </field-validator>
+</field>
+<field name="userInput">
+	<field-validator type="requiredstring">
+        	<param name="trim">true</param>
+            <message>User Input is required</message>
+        </field-validator>
+</field>
+
+<field name="attributeRemark" >
+	<field-validator type="stringlength">
+ 		<param name="minLength">1</param>
+             <param name="maxLength">250</param>
+             <param name="trim">true</param>
+         <message>Attribute Remark not more than 250 character</message>
+ 	</field-validator>
+</field>
+
+
+</validators> 
